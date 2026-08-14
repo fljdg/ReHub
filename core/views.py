@@ -1,3 +1,5 @@
-from django.shortcuts import render
+from django.http import HttpResponse
 
-# Create your views here.
+
+def test_backend(request):
+    return HttpResponse("ReHub Django backend is working!")
