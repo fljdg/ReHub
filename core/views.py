@@ -1,5 +1,5 @@
-from django.http import HttpResponse
+from django.shortcuts import render
 
 
-def test_backend(request):
-    return HttpResponse("ReHub Django backend is working!")
+def dashboard(request):
+    return render(request, 'dashboard.html')
