@@ -1,0 +1,55 @@
+{% comment %} =========================================================
+   BLOCK: FEATURES
+   Styles: css/public/features.css
+   JS:     js/public/features-carousel.js
+   To add/remove a feature card, copy one .pub-feature-card
+   block below — no other file needs to change.
+   ========================================================= {% endcomment %}
+<section class="pub-section" id="features">
+  <div class="pub-container">
+    <div class="pub-features">
+      <h2 class="pub-features-title">Features</h2>
+
+      <button class="pub-features-arrow prev" id="featuresPrev" aria-label="Previous feature">&larr;</button>
+      <button class="pub-features-arrow next" id="featuresNext" aria-label="Next feature">&rarr;</button>
+
+      <div class="pub-features-track" id="featuresTrack">
+
+        <article class="pub-feature-card">
+          <div class="pub-art pub-feature-art">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" stroke="var(--pub-navy)" stroke-width="1.4"/>
+              <path d="M14 3v5h5M9 13h6M9 17h6" stroke="var(--pub-navy)" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            <span class="pub-feature-name">Proposal Management</span>
+          </div>
+          <p class="pub-feature-desc">For students and faculty to submit, track, review, revise, and approve research proposals securely.</p>
+        </article>
+
+        <article class="pub-feature-card">
+          <div class="pub-art pub-feature-art">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 3a5 5 0 0 0-5 5c0 2 1 3 1 4.5V15h8v-2.5c0-1.5 1-2.5 1-4.5a5 5 0 0 0-5-5Z" stroke="var(--pub-navy)" stroke-width="1.4"/>
+              <path d="M9.5 18h5M10 20.5h4" stroke="var(--pub-navy)" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            <span class="pub-feature-name">AI Research Assistant</span>
+          </div>
+          <p class="pub-feature-desc">To improve proposals, recommends relevant research, and detects duplicate topics.</p>
+        </article>
+
+        <article class="pub-feature-card">
+          <div class="pub-art pub-feature-art">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="5" width="16" height="15" rx="2" stroke="var(--pub-navy)" stroke-width="1.4"/>
+              <path d="M4 9.5h16M8 3v3M16 3v3" stroke="var(--pub-navy)" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M8.5 14l2 2 4-4" stroke="var(--pub-navy)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="pub-feature-name">Planning &amp; Milestones</span>
+          </div>
+          <p class="pub-feature-desc">Built-in tools for setting weekly milestones, assigning tasks, and tracking project timelines.</p>
+        </article>
+
+      </div>
+    </div>
+  </div>
+</section>

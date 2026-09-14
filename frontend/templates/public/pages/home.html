@@ -1,0 +1,20 @@
+{% extends "public/base_public.html" %}
+{% load static %}
+
+{% block title %}ReHub — Research, Simplified{% endblock %}
+
+{% block navbar %}
+  {% include "public/partials/navbar.html" with active="home" %}
+{% endblock %}
+
+{% block content %}
+  {% include "public/partials/hero.html" %}
+  {% include "public/partials/features.html" %}
+  {% include "public/partials/demonstration.html" %}
+  {% include "public/partials/about.html" %}
+  {% include "public/partials/team.html" %}
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/public/features-carousel.js' %}"></script>
+{% endblock %}

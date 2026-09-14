@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ReHub{% endblock %}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/public/public.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="pub">
+
+  {% block navbar %}
+    {% include "public/partials/navbar.html" %}
+  {% endblock %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  {% block footer %}
+    {% include "public/partials/footer.html" %}
+  {% endblock %}
+
+  <script src="{% static 'js/public/navbar.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

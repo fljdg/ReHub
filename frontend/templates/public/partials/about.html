@@ -1,0 +1,51 @@
+{% comment %} =========================================================
+   BLOCK: ABOUT
+   Styles: css/public/about.css
+   Layout matches the Canva design: one tall photo on the left,
+   heading + copy + highlight cards + a secondary thumbnail
+   stacked on the right.
+   ========================================================= {% endcomment %}
+<section class="pub-section" id="about">
+  <div class="pub-container pub-about-inner">
+
+    <div class="pub-art pub-photo-placeholder pub-about-photo-main">
+      {% include "public/partials/image_placeholder_icon.html" %}
+    </div>
+
+    <div class="pub-about-text">
+      <h2 class="pub-section-title">About Us</h2>
+      <p class="pub-section-subtitle">
+        Developed to foster higher education innovation, ReHub streamlines
+        institutional workflows and supports <em>Sustainable Development
+        Goal 9: Industry, Innovation, and Infrastructure.</em>
+      </p>
+
+      <div class="pub-about-highlights">
+        <div class="pub-highlight pub-card">
+          <span class="pub-highlight-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 6v6l4 2" stroke="white" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="white" stroke-width="1.6"/></svg>
+          </span>
+          <span>
+            <span class="pub-highlight-title">Time Saver</span><br>
+            <span class="pub-highlight-desc">Smart AI-Assisted Support</span>
+          </span>
+        </div>
+
+        <div class="pub-highlight pub-card">
+          <span class="pub-highlight-icon">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="6" r="2.4" stroke="white" stroke-width="1.6"/><circle cx="6" cy="17" r="2.4" stroke="white" stroke-width="1.6"/><circle cx="18" cy="17" r="2.4" stroke="white" stroke-width="1.6"/><path d="M12 8.4v3M10.3 13 7.7 15.3M13.7 13l2.6 2.3" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </span>
+          <span>
+            <span class="pub-highlight-title">Collaboration</span><br>
+            <span class="pub-highlight-desc">All-In-One Centralized Hub</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="pub-art pub-photo-placeholder pub-about-photo-secondary">
+        <span class="pub-play pub-about-play">&#9654;</span>
+      </div>
+    </div>
+
+  </div>
+</section>

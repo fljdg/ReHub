@@ -1,0 +1,58 @@
+/* =========================================================
+   BLOCK: TEAM
+   Template: partials/public/team.html
+   Tall bordered frame (matching the original's photo frames)
+   with a silhouette placeholder, plus a name/role card below.
+   ========================================================= */
+
+.pub-team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 36px;
+}
+
+.pub-team-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pub-team-frame {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border: 2px solid var(--pub-blue);
+  border-radius: var(--pub-radius);
+  background: #F2F6FA;
+  color: #A9BBCC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pub-team-frame svg { width: 34%; height: 34%; }
+
+.pub-team-info {
+  width: 90%;
+  margin-top: -18px;
+  text-align: center;
+  padding: 14px 10px;
+  z-index: 1;
+}
+
+.pub-team-name {
+  font-weight: 700;
+  color: var(--pub-blue-dark);
+  font-size: 15px;
+}
+
+.pub-team-role {
+  font-size: 12.5px;
+  color: var(--pub-slate);
+  font-style: italic;
+  margin-top: 2px;
+}
+
+@media (max-width: 760px) {
+  .pub-team-grid { grid-template-columns: repeat(2, 1fr); }
+}

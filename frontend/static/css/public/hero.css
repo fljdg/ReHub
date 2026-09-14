@@ -1,0 +1,50 @@
+/* =========================================================
+   BLOCK: HERO
+   Template: partials/public/hero.html
+   ========================================================= */
+
+.pub-hero {
+  padding: 64px 0 40px;
+}
+
+.pub-hero-inner {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: 48px;
+}
+
+.pub-hero-heading {
+  font-size: 44px;
+  line-height: 1.18;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--pub-blue);
+}
+
+.pub-hero-copy {
+  margin-top: 20px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--pub-slate);
+  max-width: 480px;
+}
+
+.pub-hero-actions {
+  margin-top: 28px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.pub-hero-art {
+  aspect-ratio: 1 / 1.1;
+}
+
+.pub-hero-art svg { width: 34%; height: 34%; }
+
+@media (max-width: 900px) {
+  .pub-hero-inner { grid-template-columns: 1fr; }
+  .pub-hero-heading { font-size: 32px; }
+  .pub-hero-art { order: -1; aspect-ratio: 16 / 9; }
+}

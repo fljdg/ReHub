@@ -1,0 +1,57 @@
+{% comment %} =========================================================
+   BLOCK: FOOTER
+   Styles: css/public/footer.css
+   ========================================================= {% endcomment %}
+<footer class="pub-footer" id="contact">
+
+  <div class="pub-footer-main">
+
+    <div>
+      <div class="pub-footer-brand">
+        {% include "public/partials/brand_mark.html" %}
+        <span>ReHub</span>
+      </div>
+      <p class="pub-footer-desc">
+        ReHub provides a unified, rigorous environment for managing complex
+        academic projects. Streamline data collection, accelerate literature
+        reviews, and automate institutional reporting.
+      </p>
+    </div>
+
+    <div>
+      <div class="pub-footer-heading">Pages</div>
+      <ul class="pub-footer-links">
+        <li><a href="{% url 'public_home' %}#home">Home</a></li>
+        <li><a href="{% url 'public_home' %}#features">Features</a></li>
+        <li><a href="{% url 'public_home' %}#demonstration">Demonstration</a></li>
+        <li><a href="{% url 'public_home' %}#about">About</a></li>
+        <li><a href="{% url 'public_home' %}#contact">Contact</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="pub-footer-heading">Send us your feedback</div>
+      <p class="pub-footer-desc">Your feedback will be sent to our email and will be carefully considered.</p>
+      <form class="pub-footer-form" action="#" method="post">
+        <input type="email" placeholder="you@example.com" aria-label="Your email">
+        <button type="submit" aria-label="Send feedback">&#8594;</button>
+      </form>
+    </div>
+
+  </div>
+
+  <div class="pub-footer-bottom">
+    <span>&copy; 2026 ReHub — All rights reserved</span>
+    <div class="pub-footer-legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms &amp; Conditions</a>
+      <a href="#">Help &amp; Support</a>
+    </div>
+    <div class="pub-footer-social">
+      <a href="#" aria-label="Facebook">f</a>
+      <a href="#" aria-label="Instagram">ig</a>
+      <a href="#" aria-label="LinkedIn">in</a>
+    </div>
+  </div>
+
+</footer>
