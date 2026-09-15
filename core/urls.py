@@ -9,4 +9,3 @@ urlpatterns = [
     path('login/', views.public_login, name='public_login'),
     path('get-started/', views.public_get_started, name='public_get_started'),
 ]
-
