@@ -1,26 +1,20 @@
+{% extends "public/base_public.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ReHub — Home</title>
-  
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- ReHub Custom Styles -->
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+{% block title %}ReHub — Research, Simplified{% endblock %}
 
-  {% include 'public/partials/navbar.html' %}
-  {% include 'public/partials/hero.html' %}
-  {% include 'public/partials/features.html' %}
-  {% include 'public/partials/demonstration.html' %}
-  {% include 'public/partials/about.html' %}
-  {% include 'public/partials/team.html' %}
-  {% include 'public/partials/footer.html' %}
+{% block navbar %}
+  {% include "public/partials/navbar.html" with active="home" %}
+{% endblock %}
 
-</body>
-</html>
+{% block content %}
+  {% include "public/partials/hero.html" %}
+  {% include "public/partials/features.html" %}
+  {% include "public/partials/demonstration.html" %}
+  {% include "public/partials/about.html" %}
+  {% include "public/partials/team.html" %}
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/public/features-carousel.js' %}"></script>
+{% endblock %}
