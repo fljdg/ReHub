@@ -1,0 +1,30 @@
+{% extends 'core/dashboard_base.html' %}
+
+{% block title %}ReHub | Dashboard{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+<div class="dash-welcome">
+    <h1 class="title-gradient">Welcome back, {{ display_name }}</h1>
+    <p>You have {{ proposal_count }} proposal{{ proposal_count|pluralize }} on file.</p>
+</div>
+
+{% if recent_proposals %}
+<table class="data-table" style="margin-top:24px;">
+    <thead>
+        <tr><th>Title</th><th>Status</th><th>Submitted</th></tr>
+    </thead>
+    <tbody>
+        {% for proposal in recent_proposals %}
+        <tr>
+            <td>{{ proposal.title }}</td>
+            <td>{{ proposal.get_status_display }}</td>
+            <td>{{ proposal.created_at|date:"M j, Y" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p style="margin-top:16px;color:var(--muted);">No proposals submitted yet.</p>
+{% endif %}
+{% endblock %}

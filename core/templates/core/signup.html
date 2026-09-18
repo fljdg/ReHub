@@ -1,0 +1,74 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}ReHub | Get Started{% endblock %}
+
+{% block content %}
+<section class="auth auth-media-right">
+
+    <div class="auth-media">
+        <img src="{% static 'core/images/getStarted.png' %}" alt="Searching for research online">
+        <span class="auth-fade" aria-hidden="true"></span>
+    </div>
+
+    <div class="auth-panel">
+        <form class="auth-form" method="post" action="{% url 'core:signup' %}">
+            {% csrf_token %}
+
+            <header class="auth-head">
+                <h1 class="title-gradient">Get Started!</h1>
+                <p class="auth-sub">Please sign up to your account</p>
+            </header>
+
+            {% if errors %}
+            <ul class="auth-error" style="padding-left:18px;">
+                {% for error in errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <div class="field-row">
+                <div>
+                    <label class="sr-only" for="id_first_name">First name</label>
+                    <input class="field" id="id_first_name" type="text" name="first_name"
+                           placeholder="First Name" autocomplete="given-name" value="{{ request.POST.first_name|default:'' }}" required>
+                </div>
+                <div>
+                    <label class="sr-only" for="id_last_name">Last name</label>
+                    <input class="field" id="id_last_name" type="text" name="last_name"
+                           placeholder="Last Name" autocomplete="family-name" value="{{ request.POST.last_name|default:'' }}" required>
+                </div>
+            </div>
+
+            <label class="sr-only" for="id_email">Email</label>
+            <input class="field" id="id_email" type="email" name="email"
+                   placeholder="Email" autocomplete="email" value="{{ request.POST.email|default:'' }}" required>
+
+            <div class="field-row">
+                <div>
+                    <label class="sr-only" for="id_password1">Password</label>
+                    <input class="field" id="id_password1" type="password" name="password1"
+                           placeholder="Password" autocomplete="new-password" required>
+                </div>
+                <div>
+                    <label class="sr-only" for="id_password2">Confirm password</label>
+                    <input class="field" id="id_password2" type="password" name="password2"
+                           placeholder="Confirm Password" autocomplete="new-password" required>
+                </div>
+            </div>
+
+            <div class="auth-row">
+                <label class="auth-check">
+                    <input type="checkbox" name="terms" required>
+                    <span class="box" aria-hidden="true"></span>
+                    <span>I accept the <a class="auth-link" href="#">Terms and Conditions</a></span>
+                </label>
+            </div>
+
+            <button class="btn-submit" type="submit">Sign Up</button>
+        </form>
+    </div>
+
+</section>
+{% endblock %}

@@ -1,0 +1,215 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}ReHub | Streamline Your Research Journey{% endblock %}
+
+{% block content %}
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="home">
+    <div class="hero-media">
+        <img src="{% static 'core/images/homePage.png' %}" alt="Researcher working on a laptop" onerror="this.closest('.hero-media').classList.add('img-missing')">
+        <span class="hero-fade" aria-hidden="true"></span>
+    </div>
+
+    <div class="hero-copy">
+        <h1>Streamline Your Research<br>Journey from Proposal to<br>Completion</h1>
+        <p>Empowering academic research teams with centralized tracking
+            and AI-driven guidance from proposal to project completion.</p>
+        <div class="hero-buttons">
+            <a href="{% url 'core:signup' %}" class="btn btn-gradient btn-lg">Get Started <span class="arrow">&#8594;</span></a>
+            <a href="#demonstration" class="btn btn-outline btn-lg"><span class="play">&#9654;</span> View Demo</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== FEATURES ===================== -->
+<section class="features" id="features">
+    <h2 class="title-on-blue">Features</h2>
+
+    <div class="carousel">
+        <button class="carousel-btn prev" type="button" data-track="features-track" data-dir="-1" aria-label="Previous feature">&#10094;</button>
+
+        <div class="carousel-track" id="features-track">
+            {% for feature in features %}
+            <article class="feature-card">
+                <div class="feature-art">
+                    <!-- Drop a real illustration at core/static/core/images/feature{{ forloop.counter }}.png -->
+                    <div class="art-placeholder"><span>Image</span></div>
+                    <span class="feature-tag">{{ feature.title }}</span>
+                </div>
+                <p>{{ feature.text }}</p>
+            </article>
+            {% endfor %}
+        </div>
+
+        <button class="carousel-btn next" type="button" data-track="features-track" data-dir="1" aria-label="Next feature">&#10095;</button>
+    </div>
+</section>
+
+<!-- ===================== DEMONSTRATION ===================== -->
+<section class="demo-wrap" id="demonstration">
+    <div class="demo-card">
+        <h2 class="title-gradient">Demonstration</h2>
+
+        <div class="demo-body">
+            <div class="demo-media">
+                <!-- Swap for a real still/video at core/static/core/images/demo.png -->
+                <div class="art-placeholder tall"><span>Demo video</span></div>
+            </div>
+
+            <ol class="demo-steps">
+                {% for step in steps %}
+                <li>
+                    <span class="step-badge">{{ step.number }}</span>
+                    <p>{{ step.title }} ({{ step.text }})</p>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== ABOUT US ===================== -->
+<section class="about" id="about">
+    <div class="about-media">
+        <img src="{% static 'core/images/aboutUs.png' %}" alt="Research team collaborating" onerror="this.closest('.about-media').classList.add('img-missing')">
+        <span class="about-fade" aria-hidden="true"></span>
+    </div>
+
+    <div class="about-panel">
+        <h2 class="title-gradient right">About Us</h2>
+        <p class="about-lead">Developed to foster higher education innovation, ReHub streamlines
+            institutional workflows and supports <em>Sustainable Development Goal
+            9: Industry, Innovation, and Infrastructure.</em></p>
+
+        <div class="carousel about-carousel">
+            <div class="carousel-track" id="about-track">
+                <article class="about-chip">
+                    <span class="chip-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path>
+                        </svg>
+                    </span>
+                    <div>
+                        <h3>Time Saver</h3>
+                        <p>Smart AI-Assisted<br>Support</p>
+                    </div>
+                </article>
+                <article class="about-chip">
+                    <span class="chip-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2.5"></circle>
+                            <path d="M3.5 18c0-3 2.5-4.5 5.5-4.5s5.5 1.5 5.5 4.5"></path><path d="M16 14c2.8 0 4.5 1.4 4.5 4"></path>
+                        </svg>
+                    </span>
+                    <div>
+                        <h3>Collaboration</h3>
+                        <p>All-In-One<br>Centralized Hub</p>
+                    </div>
+                </article>
+            </div>
+            <button class="carousel-btn next subtle" type="button" data-track="about-track" data-dir="1" aria-label="Next highlight">&#10095;</button>
+        </div>
+
+        <div class="about-photo">
+            <!-- Swap for a real photo at core/static/core/images/meeting.png -->
+            <div class="art-placeholder wide"><span>Meeting room</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== TEAM ===================== -->
+<section class="team">
+    <div class="team-grid">
+        {% for member in team %}
+        <article class="team-card">
+            <div class="team-photo">
+                <!-- Swap for a real portrait at core/static/core/images/team/{{ forloop.counter }}.png -->
+                <div class="art-placeholder portrait"><span>Photo</span></div>
+            </div>
+            <div class="team-name">
+                <h3>{{ member.name }}</h3>
+                <p>{{ member.role }}</p>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
+
+{% block footer %}
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer" id="contact">
+    <div class="footer-top">
+        <div class="footer-brand">
+            <div class="logo">
+                <img src="{% static 'core/images/logo.png' %}" alt="ReHub logo" class="logo-light">
+                <span class="logo-text light">ReHub</span>
+            </div>
+            <p>ReHub provides a unified, rigorous environment for
+                managing complex academic projects. Streamline
+                data collection, accelerate literature reviews, and
+                automate institutional reporting.</p>
+        </div>
+
+        <nav class="footer-pages">
+            <h4>Pages</h4>
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#demonstration">Demonstration</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+        <div class="footer-feedback">
+            <h4>Send us your feedback</h4>
+            <p>Your feedback will be sent to our email<br>and will be carefully considered.</p>
+            <form class="feedback-form" method="post" action="#">
+                {% csrf_token %}
+                <label class="sr-only" for="feedback">Your feedback</label>
+                <input id="feedback" type="text" name="feedback" placeholder="">
+                <button type="submit" aria-label="Send feedback">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                        <circle cx="11" cy="11" r="6"></circle><path d="M20 20l-4.3-4.3"></path>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <span class="copyright">&copy; 2026 - All rights reserved</span>
+        <div class="footer-legal">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms &amp; Conditions</a>
+            <a href="#">Help &amp; Support</a>
+        </div>
+        <div class="footer-social">
+            <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.1h-3.1V8.9c0-.9.25-1.5 1.55-1.5h1.65V4.6A22 22 0 0 0 14.3 4.5c-2.4 0-4 1.45-4 4.1v2.3H7.6V14h2.7v8z"/></svg></a>
+            <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17" cy="7" r="1.2" fill="currentColor" stroke="none"/></svg></a>
+            <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4.5 3a1.9 1.9 0 1 0 0 3.8 1.9 1.9 0 0 0 0-3.8M3 8.5h3V21H3zM9 8.5h2.9v1.7h.05c.4-.75 1.4-1.55 2.9-1.55 3.1 0 3.65 2 3.65 4.65V21h-3v-5.6c0-1.35-.03-3.05-1.9-3.05-1.9 0-2.2 1.45-2.2 2.95V21H9z"/></svg></a>
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Simple carousel: slides one card per click, wrapping at the ends.
+    document.querySelectorAll('.carousel-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
+            var track = document.getElementById(button.dataset.track);
+            if (!track) return;
+            var card = track.firstElementChild;
+            if (!card) return;
+            var step = card.getBoundingClientRect().width + 22;
+            var max = track.scrollWidth - track.clientWidth;
+            var dir = Number(button.dataset.dir);
+            var next = track.scrollLeft + step * dir;
+            if (next > max - 2) next = dir > 0 ? 0 : max;
+            if (next < 0) next = max;
+            track.scrollTo({ left: next, behavior: 'smooth' });
+        });
+    });
+</script>
+{% endblock %}

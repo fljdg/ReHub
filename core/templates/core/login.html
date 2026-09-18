@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}ReHub | Login{% endblock %}
+
+{% block content %}
+<section class="auth auth-media-left">
+
+    <div class="auth-media">
+        <img src="{% static 'core/images/login.png' %}" alt="Stack of bound research papers">
+        <span class="auth-fade" aria-hidden="true"></span>
+    </div>
+
+    <div class="auth-panel">
+        <form class="auth-form" method="post" action="{% url 'core:login' %}">
+            {% csrf_token %}
+
+            <header class="auth-head">
+                <h1 class="title-gradient">Welcome Back!</h1>
+                <p class="auth-sub">Please login to your account</p>
+            </header>
+
+            {% if error %}
+            <p class="auth-error">{{ error }}</p>
+            {% endif %}
+
+            <label class="sr-only" for="id_username">Username</label>
+            <input class="field" id="id_username" type="text" name="username"
+                   placeholder="Username" autocomplete="username" value="{{ request.POST.username|default:'' }}" required>
+
+            <label class="sr-only" for="id_password">Password</label>
+            <input class="field" id="id_password" type="password" name="password"
+                   placeholder="Password" autocomplete="current-password" required>
+
+            <div class="auth-row">
+                <label class="auth-check">
+                    <input type="checkbox" name="remember">
+                    <span class="box" aria-hidden="true"></span>
+                    <span>Remember me</span>
+                </label>
+                <a class="auth-link" href="#">Forgot Password?</a>
+            </div>
+
+            <button class="btn-submit" type="submit">Login</button>
+        </form>
+    </div>
+
+</section>
+{% endblock %}
