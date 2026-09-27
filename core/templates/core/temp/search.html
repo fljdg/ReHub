@@ -1,0 +1,72 @@
+{% extends 'core/temp/app_temp_base.html' %}
+
+{% block title %}ReHub | Search{% endblock %}
+
+{% block content %}
+<main class="temp-page">
+
+    <section class="temp-card">
+        <h1>Search results</h1>
+        {% if not q %}
+            <p class="temp-muted">Type something in the search box above and press Enter.</p>
+        {% else %}
+            <p class="temp-muted">
+                {{ results.total }} result{{ results.total|pluralize }} for &ldquo;{{ q }}&rdquo;
+                {% if request.user.is_staff %}&middot; searching everyone&rsquo;s work (staff){% else %}&middot; searching your work{% endif %}
+            </p>
+        {% endif %}
+    </section>
+
+    {% if q and results.total == 0 %}
+    <section class="temp-card">
+        <p class="temp-muted">Nothing matched. Try fewer or different words &mdash; every word you type has to appear in a title or description.</p>
+    </section>
+    {% endif %}
+
+    {% if results.proposals %}
+    <section class="temp-card">
+        <h2>Proposals</h2>
+        <div class="temp-list">
+            {% for proposal in results.proposals %}
+            <div class="temp-item">
+                <strong>{{ proposal.title }}</strong>
+                <span><span class="temp-badge">{{ proposal.get_status_display }}</span>
+                    &nbsp;{{ proposal.created_at|date:"M j, Y" }}{% if request.user.is_staff %} &middot; by {{ proposal.submitted_by.get_full_name|default:proposal.submitted_by.username }}{% endif %}</span>
+                {% if proposal.description %}<p>{{ proposal.description|truncatechars:160 }}</p>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if results.projects %}
+    <section class="temp-card">
+        <h2>Projects</h2>
+        <div class="temp-list">
+            {% for project in results.projects %}
+            <div class="temp-item">
+                <strong>{{ project.title }}</strong>
+                <span><span class="temp-badge">{{ project.get_status_display }}</span> &nbsp;Started {{ project.start_date|date:"M j, Y" }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if results.milestones %}
+    <section class="temp-card">
+        <h2>Milestones</h2>
+        <div class="temp-list">
+            {% for milestone in results.milestones %}
+            <div class="temp-item">
+                <strong>{{ milestone.title }}</strong>
+                <span><span class="temp-badge">{{ milestone.get_status_display }}</span>
+                    &nbsp;Due {{ milestone.due_date|date:"M j, Y" }} &middot; {{ milestone.project.title }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+</main>
+{% endblock %}

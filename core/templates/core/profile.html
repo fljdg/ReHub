@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReHub | Home</title>
+    <title>ReHub | Me</title>
 
     <link rel="icon" href="{% static 'core/images/logo.png' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +16,7 @@
 
 <!-- ===================== TOP APP NAV ===================== -->
 <header class="app-nav">
-    <a class="logo" href="{% url 'core:dashboard' %}">
+    <a class="logo" href="{% url 'core:profile' %}">
         <img src="{% static 'core/images/logo.png' %}" alt="ReHub logo">
         <span class="logo-text">ReHub</span>
     </a>
@@ -56,6 +56,66 @@
         </a>
     </div>
 </header>
+
+<!-- ===================== PROFILE PAGE ===================== -->
+<main class="profile-page">
+    <section class="profile-card">
+        <div class="profile-cover">
+            <span class="hill hill-1"></span>
+            <span class="hill hill-2"></span>
+            <button class="icon-edit-btn" type="button" title="Edit cover">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M4 20l4.5-1 10-10-3.5-3.5-10 10L4 20z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            </button>
+        </div>
+
+        <div class="profile-body">
+            <div class="profile-avatar-row">
+                <div class="profile-avatar">{{ initials }}</div>
+                <button class="icon-edit-btn profile-info-edit" type="button" title="Edit profile">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M4 20l4.5-1 10-10-3.5-3.5-10 10L4 20z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+
+            <div class="profile-info">
+                <h1>{{ display_name }}</h1>
+                <p class="profile-bio">Add bio here.</p>
+                <p class="profile-location">Add location here.</p>
+            </div>
+
+            <div class="milestones-row">
+                <div class="milestones-track">
+                    {% for proposal in recent_proposals %}
+                    <div class="milestone-card">
+                        <h3>{{ proposal.title }}</h3>
+                        <span>{{ proposal.created_at|date:"M. Y" }} &ndash; {{ proposal.get_status_display }}</span>
+                    </div>
+                    {% empty %}
+                    <div class="milestone-card">
+                        <h3>Automatic input of milestones here.</h3>
+                        <span>Aug. 2026 &ndash; Sept. 2026</span>
+                    </div>
+                    <div class="milestone-card">
+                        <h3>Automatic input of milestones here.</h3>
+                        <span>Aug. 2026 &ndash; Sept. 2026</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="milestones-next" type="button" aria-label="Next">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+
+            <div class="profile-signout">
+                <a href="{% url 'core:logout' %}" class="btn btn-outline">Sign Out</a>
+            </div>
+        </div>
+    </section>
+
+    <aside class="profile-sidebar-card">
+        <h3>Profile Link</h3>
+        <p>www.rehub.com/hub/{{ request.user.username }}</p>
+    </aside>
+</main>
 
 </body>
 </html>

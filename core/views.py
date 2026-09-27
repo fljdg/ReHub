@@ -1,19 +1,69 @@
+import os
+from functools import wraps
+from urllib.parse import urlencode
+
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
 from django.db import IntegrityError
 from django.shortcuts import redirect, render
+from django.urls import reverse
 
 from .models import Proposal
+from .search import run_search
 
 
 # ---------------------------------------------------------------
 # PUBLIC / MARKETING PAGES
 # ---------------------------------------------------------------
 
+def _handle_feedback(request):
+    """Handles the footer feedback form (it posts to the home page)."""
+    text = request.POST.get('feedback', '').strip()
+
+    def flash(ok, message):
+        # Kept in the session and picked up by the next home page load as
+        # `feedback_message` / `feedback_ok` in the template context.
+        request.session['feedback_status'] = {'ok': ok, 'message': message}
+
+    if not text:
+        flash(False, 'Please write your feedback before sending.')
+    elif len(text) > 2000:
+        flash(False, 'Your feedback is too long (2000 characters max).')
+    else:
+        sender = 'a visitor'
+        if request.user.is_authenticated:
+            sender = f'{request.user.username} <{request.user.email}>'
+        recipient = os.getenv('FEEDBACK_EMAIL', 'rehub@example.com')
+        try:
+            send_mail(
+                subject='ReHub feedback',
+                message=f'From: {sender}\n\n{text}',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[recipient],
+                fail_silently=False,
+            )
+        except Exception:
+            flash(False, 'Sorry, we could not send your feedback. Please try again.')
+        else:
+            flash(True, 'Thank you! Your feedback has been sent.')
+
+    return redirect(f"{request.path}#contact")
+
+
 def home(request):
     """Renders the ReHub landing page (Home)."""
+    if request.method == 'POST':
+        return _handle_feedback(request)
+
+    status = request.session.pop('feedback_status', None)
     context = {
+        'feedback_message': status['message'] if status else None,
+        'feedback_ok': status['ok'] if status else None,
         'features': [
             {
                 'title': 'Proposal Management',
@@ -65,13 +115,29 @@ def login_view(request):
 
     error = None
     if request.method == 'POST':
-        username = request.POST.get('username', '').strip()
+        # The login box is still named "username" in the template, but people sign up
+        # with an email, so an email typed there is what we look up. A plain username
+        # (for example an admin account made with createsuperuser) still works too.
+        identifier = request.POST.get('username', '').strip()
         password = request.POST.get('password', '')
-        user = authenticate(request, username=username, password=password)
+
+        user = None
+        if '@' in identifier:
+            for candidate in User.objects.filter(email__iexact=identifier):
+                user = authenticate(request, username=candidate.get_username(), password=password)
+                if user is not None:
+                    break
+        else:
+            user = authenticate(request, username=identifier, password=password)
+
         if user is not None:
             login(request, user)
+            if request.POST.get('remember'):
+                request.session.set_expiry(60 * 60 * 24 * 30)  # stay signed in for 30 days
+            else:
+                request.session.set_expiry(0)  # sign out when the browser closes
             return redirect('core:dashboard')
-        error = 'Incorrect username or password.'
+        error = 'Incorrect email or password.'
     return render(request, 'core/login.html', {'error': error})
 
 
@@ -84,7 +150,7 @@ def signup_view(request):
     if request.method == 'POST':
         first_name = request.POST.get('first_name', '').strip()
         last_name = request.POST.get('last_name', '').strip()
-        email = request.POST.get('email', '').strip()
+        email = request.POST.get('email', '').strip().lower()
         password1 = request.POST.get('password1', '')
         password2 = request.POST.get('password2', '')
 
@@ -92,10 +158,20 @@ def signup_view(request):
             errors.append('Please fill in every field.')
         if password1 and password2 and password1 != password2:
             errors.append('Passwords do not match.')
-        if password1 and len(password1) < 8:
-            errors.append('Password must be at least 8 characters.')
+        if password1 and password1 == password2:
+            # Django's real validators: length, too common, all numeric, too similar to name/email.
+            try:
+                validate_password(
+                    password1,
+                    user=User(email=email, first_name=first_name, last_name=last_name,
+                              username=email.split('@')[0]),
+                )
+            except ValidationError as exc:
+                errors.extend(exc.messages)
         if email and User.objects.filter(email__iexact=email).exists():
             errors.append('An account with that email already exists.')
+        if not request.POST.get('terms'):
+            errors.append('Please accept the Terms and Conditions.')
 
         if not errors:
             username = email.split('@')[0]
@@ -128,11 +204,11 @@ def logout_view(request):
 
 
 # ---------------------------------------------------------------
-# DASHBOARD (auth required)
+# AUTHENTICATED APP PAGES
 # ---------------------------------------------------------------
 
 def _profile_context(user):
-    """Small helper so every dashboard page gets the same header/sidebar data."""
+    """Small helper so every authenticated page gets the same nav/header data."""
     display_name = user.get_full_name() or user.username
     if user.is_superuser:
         role = 'Administrator'
@@ -144,11 +220,67 @@ def _profile_context(user):
     return {'display_name': display_name, 'role': role, 'initials': initials}
 
 
+def _search_redirect(view):
+    """The top search bar in the designed pages submits to the page you are on (?q=...).
+    This sends that search to the results page, so those templates need no changes."""
+    @wraps(view)
+    def wrapper(request, *args, **kwargs):
+        if request.method == 'GET' and 'q' in request.GET:
+            return redirect(f"{reverse('core:search')}?{urlencode({'q': request.GET['q']})}")
+        return view(request, *args, **kwargs)
+    return wrapper
+
+
 @login_required
+@_search_redirect
 def dashboard(request):
+    """Home page shown right after login (the nav's 'Home' tab)."""
+    context = _profile_context(request.user)
+    return render(request, 'core/dashboard.html', context)
+
+
+@login_required
+@_search_redirect
+def research(request):
+    """The 'My Research' tab."""
+    context = _profile_context(request.user)
+    context['proposals'] = Proposal.objects.filter(submitted_by=request.user).order_by('-created_at')
+    return render(request, 'core/myResearch.html', context)
+
+
+@login_required
+@_search_redirect
+def assistant(request):
+    """The 'AI Assistant' tab."""
+    context = _profile_context(request.user)
+    return render(request, 'core/assistant.html', context)
+
+
+@login_required
+@_search_redirect
+def calendar_view(request):
+    """The 'Calendar' tab."""
+    context = _profile_context(request.user)
+    return render(request, 'core/calendar.html', context)
+
+
+@login_required
+@_search_redirect
+def profile(request):
+    """The 'Me' tab."""
     context = _profile_context(request.user)
     context['proposal_count'] = Proposal.objects.filter(submitted_by=request.user).count()
     context['recent_proposals'] = (
         Proposal.objects.filter(submitted_by=request.user).order_by('-created_at')[:5]
     )
-    return render(request, 'core/dashboard.html', context)
+    return render(request, 'core/profile.html', context)
+
+
+@login_required
+def search(request):
+    """Results page for the top search bar (temporary UI in core/templates/core/temp/)."""
+    query = request.GET.get('q', '').strip()[:100]
+    context = _profile_context(request.user)
+    context['q'] = query
+    context['results'] = run_search(request.user, query) if query else None
+    return render(request, 'core/temp/search.html', context)

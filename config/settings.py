@@ -34,7 +34,6 @@ ALLOWED_HOSTS = [
     for h in os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
     if h.strip()
 ]
-
 CSRF_TRUSTED_ORIGINS = [
     o.strip()
     for o in os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
@@ -87,6 +86,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+# DB_ENGINE picks the database:
+#   sqlite   -> local db.sqlite3 file in the project folder (default, nothing touches Supabase)
+#   postgres -> Supabase Postgres using the DB_* values in .env
 DB_ENGINE = os.getenv('DB_ENGINE', 'sqlite').strip().lower()
 
 if DB_ENGINE == 'postgres':
@@ -98,7 +100,9 @@ if DB_ENGINE == 'postgres':
             'PASSWORD': os.getenv('DB_PASSWORD'),
             'HOST': os.getenv('DB_HOST'),
             'PORT': os.getenv('DB_PORT', '5432'),
+            # Supabase requires encrypted connections.
             'OPTIONS': {'sslmode': 'require'},
+            # Safe with Supabase's poolers (needed for transaction mode, port 6543).
             'DISABLE_SERVER_SIDE_CURSORS': True,
         }
     }
@@ -165,11 +169,7 @@ LOGOUT_REDIRECT_URL = 'core:home'
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/6.1/ref/settings/#default-auto-field
