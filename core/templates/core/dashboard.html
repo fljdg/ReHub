@@ -57,5 +57,57 @@
     </div>
 </header>
 
+<!-- ===================== DASHBOARD HOME ===================== -->
+<main class="dash-home">
+    <div class="dash-welcome-row">
+        <div>
+            <h1>Welcome back, {{ display_name }}</h1>
+            <p>Here's where your research stands right now.</p>
+        </div>
+        <a href="{% url 'core:research' %}" class="btn btn-gradient">My Research <span class="arrow">&rarr;</span></a>
+    </div>
+
+    <div class="stat-row">
+        <div class="stat-card">
+            <span class="stat-num">{{ proposal_count }}</span>
+            <span class="stat-label">Total Proposals</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-num">{{ pending_count }}</span>
+            <span class="stat-label">Pending Review</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-num">{{ approved_count }}</span>
+            <span class="stat-label">Approved</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-num">{{ revision_count }}</span>
+            <span class="stat-label">Needs Revision</span>
+        </div>
+    </div>
+
+    <section class="dash-recent">
+        <h2>Recent Proposals</h2>
+        {% if recent_proposals %}
+        <div class="recent-list">
+            {% for proposal in recent_proposals %}
+            <div class="recent-row">
+                <div class="recent-row-main">
+                    <h3>{{ proposal.title }}</h3>
+                    <span>Submitted {{ proposal.created_at|date:"M j, Y" }}</span>
+                </div>
+                <span class="status-pill status-{{ proposal.status }}">{{ proposal.get_status_display }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="dash-empty">
+            <p>You haven't submitted a proposal yet.</p>
+            <a href="{% url 'core:research' %}" class="btn btn-outline">Get Started</a>
+        </div>
+        {% endif %}
+    </section>
+</main>
+
 </body>
 </html>

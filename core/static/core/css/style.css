@@ -802,6 +802,147 @@ ol, ul { margin: 0; padding: 0; list-style: none; }
 .dash-welcome h1 { font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 700; margin-bottom: 10px; }
 .dash-welcome p { color: var(--muted); font-size: .92rem; max-width: 52ch; }
 
+/* =========================================================
+   DASHBOARD — HOME PAGE (top app-nav layout)
+   ========================================================= */
+.dash-home { max-width: 1120px; margin: 0 auto; padding: 32px 32px 60px; }
+
+.dash-welcome-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px; flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+.dash-welcome-row h1 { font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 700; }
+.dash-welcome-row p { color: var(--muted); font-size: .92rem; margin-top: 6px; }
+
+.stat-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+    margin-bottom: 32px;
+}
+.stat-card {
+    background: #fff;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 4px;
+}
+.stat-num { font-size: 1.8rem; font-weight: 700; color: var(--blue-deep); }
+.stat-label { font-size: .8rem; color: var(--muted); font-weight: 500; }
+
+.dash-recent h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
+.recent-list { display: flex; flex-direction: column; gap: 10px; }
+.recent-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    background: #fff;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-card);
+    padding: 14px 18px;
+}
+.recent-row-main h3 { font-size: .92rem; font-weight: 600; }
+.recent-row-main span { font-size: .78rem; color: var(--muted); }
+
+.status-pill {
+    flex: 0 0 auto;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: .72rem; font-weight: 600;
+}
+.status-pending { background: #fff4e0; color: #a3670c; }
+.status-approved { background: #e2f6ea; color: #1c8a4b; }
+.status-rejected { background: #fdeceb; color: #b3261e; }
+.status-revision { background: #e8f0fc; color: var(--blue-deep); }
+
+.dash-empty {
+    background: #fff;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    padding: 30px;
+    text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+}
+.dash-empty p { color: var(--muted); font-size: .9rem; }
+
+@media (max-width: 780px) {
+    .stat-row { grid-template-columns: repeat(2, 1fr); }
+    .dash-home { padding: 24px 18px 40px; }
+}
+
+/* =========================================================
+   MY RESEARCH PAGE (top app-nav layout)
+   ========================================================= */
+.research-page { max-width: 1120px; margin: 0 auto; padding: 32px 32px 60px; }
+
+.research-form-card {
+    background: #fff;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    padding: 24px 26px;
+    margin-bottom: 32px;
+}
+.research-form-card h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+.research-form { display: flex; flex-direction: column; gap: 14px; max-width: 560px; }
+.research-form textarea.field { resize: vertical; min-height: 100px; font-family: inherit; }
+.research-form .btn { align-self: flex-start; }
+
+/* =========================================================
+   CALENDAR PAGE (top app-nav layout)
+   ========================================================= */
+.calendar-page { max-width: 1120px; margin: 0 auto; padding: 32px 32px 60px; }
+
+.cal-nav { display: flex; align-items: center; gap: 14px; }
+.cal-nav .icon-btn { font-size: 1.3rem; line-height: 1; }
+.cal-month { min-width: 140px; text-align: center; font-size: 1rem; font-weight: 600; color: var(--blue-deep); }
+
+.cal-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    background: #fff;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    margin-bottom: 32px;
+}
+.cal-dow {
+    padding: 10px 8px;
+    background: var(--header-bg);
+    text-align: center;
+    font-size: .75rem; font-weight: 600; color: var(--muted);
+}
+.cal-cell {
+    min-height: 92px;
+    padding: 6px 8px;
+    border-top: 1px solid #eef1f4;
+    border-left: 1px solid #eef1f4;
+    display: flex; flex-direction: column; gap: 4px;
+    min-width: 0;
+}
+.cal-cell:nth-child(7n + 8) { border-left: 0; }
+.cal-cell.muted { background: #fafbfc; }
+.cal-cell.muted .cal-date { color: #b3bac3; }
+.cal-date { font-size: .78rem; font-weight: 500; color: var(--ink); }
+.cal-cell.today .cal-date {
+    display: grid; place-items: center;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background-image: var(--gradient);
+    color: #fff; font-weight: 600;
+}
+.cal-event {
+    display: block;
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: .68rem; font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cal-pending, .cal-pill-pending { background: #fff4e0; color: #a3670c; }
+.cal-in_progress, .cal-pill-in_progress { background: #e8f0fc; color: var(--blue-deep); }
+.cal-done, .cal-pill-done { background: #e2f6ea; color: #1c8a4b; }
+
+@media (max-width: 780px) {
+    .calendar-page { padding: 24px 12px 40px; }
+    .cal-cell { min-height: 64px; padding: 4px; }
+    .cal-event { font-size: .6rem; padding: 1px 4px; }
+}
+
 @media (max-width: 780px) {
     .dash-sidebar { flex-basis: 76px; width: 76px; }
     .dash-sidebar .label,

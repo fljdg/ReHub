@@ -57,5 +57,55 @@
     </div>
 </header>
 
+<!-- ===================== CALENDAR ===================== -->
+<main class="calendar-page">
+    <div class="dash-welcome-row">
+        <div>
+            <h1>Calendar</h1>
+            <p>Your project milestone deadlines at a glance.</p>
+        </div>
+        <div class="cal-nav">
+            <a href="?month={{ prev_month }}" class="icon-btn" aria-label="Previous month">&lsaquo;</a>
+            <strong class="cal-month">{{ month_label }}</strong>
+            <a href="?month={{ next_month }}" class="icon-btn" aria-label="Next month">&rsaquo;</a>
+        </div>
+    </div>
+
+    <div class="cal-grid">
+        {% for day in weekdays %}<div class="cal-dow">{{ day }}</div>{% endfor %}
+        {% for week in weeks %}
+            {% for cell in week %}
+            <div class="cal-cell{% if not cell.in_month %} muted{% endif %}{% if cell.is_today %} today{% endif %}">
+                <span class="cal-date">{{ cell.date.day }}</span>
+                {% for m in cell.events %}
+                <span class="cal-event cal-{{ m.status }}" title="{{ m.project.title }}: {{ m.title }}">{{ m.title }}</span>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <section class="dash-recent cal-upcoming">
+        <h2>Upcoming Deadlines</h2>
+        {% if upcoming %}
+        <div class="recent-list">
+            {% for m in upcoming %}
+            <div class="recent-row">
+                <div class="recent-row-main">
+                    <h3>{{ m.title }}</h3>
+                    <span>{{ m.project.title }} &middot; due {{ m.due_date|date:"M j, Y" }}</span>
+                </div>
+                <span class="status-pill cal-pill-{{ m.status }}">{{ m.get_status_display }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="dash-empty">
+            <p>No upcoming milestones yet. Deadlines appear here once a project has milestones.</p>
+        </div>
+        {% endif %}
+    </section>
+</main>
+
 </body>
 </html>

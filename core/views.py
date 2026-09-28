@@ -1,4 +1,6 @@
+import calendar as pycalendar
 import os
+from datetime import date, timedelta
 from functools import wraps
 from urllib.parse import urlencode
 
@@ -13,7 +15,7 @@ from django.db import IntegrityError
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from .models import Proposal
+from .models import Milestone, Proposal
 from .search import run_search
 
 
@@ -236,14 +238,44 @@ def _search_redirect(view):
 def dashboard(request):
     """Home page shown right after login (the nav's 'Home' tab)."""
     context = _profile_context(request.user)
+
+    proposals = Proposal.objects.filter(submitted_by=request.user)
+    context['proposal_count'] = proposals.count()
+    context['pending_count'] = proposals.filter(status='pending').count()
+    context['approved_count'] = proposals.filter(status='approved').count()
+    context['revision_count'] = proposals.filter(status='revision').count()
+    context['recent_proposals'] = proposals.order_by('-created_at')[:5]
+
     return render(request, 'core/dashboard.html', context)
 
 
 @login_required
 @_search_redirect
 def research(request):
-    """The 'My Research' tab."""
+    """The 'My Research' tab: list your proposals, submit a new one."""
     context = _profile_context(request.user)
+    errors = []
+
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        uploaded_file = request.FILES.get('file')
+
+        if not title:
+            errors.append('Please give your proposal a title.')
+        if not description:
+            errors.append('Please add a description.')
+
+        if not errors:
+            Proposal.objects.create(
+                title=title,
+                description=description,
+                file=uploaded_file,
+                submitted_by=request.user,
+            )
+            return redirect('core:research')
+
+    context['errors'] = errors
     context['proposals'] = Proposal.objects.filter(submitted_by=request.user).order_by('-created_at')
     return render(request, 'core/myResearch.html', context)
 
@@ -259,8 +291,48 @@ def assistant(request):
 @login_required
 @_search_redirect
 def calendar_view(request):
-    """The 'Calendar' tab."""
+    """The 'Calendar' tab: a month grid of your milestone deadlines (?month=YYYY-MM)."""
     context = _profile_context(request.user)
+    today = date.today()
+
+    try:
+        year, month = (int(part) for part in request.GET.get('month', '').split('-'))
+        first = date(year, month, 1)
+    except ValueError:
+        first = today.replace(day=1)
+
+    weeks = pycalendar.Calendar(firstweekday=6).monthdatescalendar(first.year, first.month)
+    milestones = Milestone.objects.filter(
+        project__proposal__submitted_by=request.user,
+        due_date__range=(weeks[0][0], weeks[-1][-1]),
+    ).select_related('project').order_by('due_date')
+
+    by_day = {}
+    for milestone in milestones:
+        by_day.setdefault(milestone.due_date, []).append(milestone)
+
+    context['month_label'] = first.strftime('%B %Y')
+    context['prev_month'] = (first - timedelta(days=1)).strftime('%Y-%m')
+    context['next_month'] = (first + timedelta(days=32)).strftime('%Y-%m')
+    context['weekdays'] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    context['weeks'] = [
+        [
+            {
+                'date': day,
+                'in_month': day.month == first.month,
+                'is_today': day == today,
+                'events': by_day.get(day, []),
+            }
+            for day in week
+        ]
+        for week in weeks
+    ]
+    context['upcoming'] = (
+        Milestone.objects.filter(project__proposal__submitted_by=request.user, due_date__gte=today)
+        .exclude(status='done')
+        .select_related('project')
+        .order_by('due_date')[:6]
+    )
     return render(request, 'core/calendar.html', context)
 
 

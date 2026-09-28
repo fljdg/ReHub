@@ -57,5 +57,52 @@
     </div>
 </header>
 
+<!-- ===================== MY RESEARCH ===================== -->
+<main class="research-page">
+    <div class="dash-welcome-row">
+        <div>
+            <h1>My Research</h1>
+            <p>Submit new proposals and track their status.</p>
+        </div>
+    </div>
+
+    <section class="research-form-card">
+        <h2>Submit New Proposal</h2>
+        {% if errors %}
+        <div class="auth-error">
+            {% for error in errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+        {% endif %}
+        <form method="post" enctype="multipart/form-data" class="research-form">
+            {% csrf_token %}
+            <input class="field" type="text" name="title" placeholder="Proposal Title" value="{{ request.POST.title|default:'' }}" required>
+            <textarea class="field" name="description" placeholder="Describe your research proposal" rows="4" required>{{ request.POST.description|default:'' }}</textarea>
+            <input class="field" type="file" name="file">
+            <button type="submit" class="btn btn-gradient">Submit Proposal</button>
+        </form>
+    </section>
+
+    <section class="dash-recent">
+        <h2>Your Proposals</h2>
+        {% if proposals %}
+        <div class="recent-list">
+            {% for proposal in proposals %}
+            <div class="recent-row">
+                <div class="recent-row-main">
+                    <h3>{{ proposal.title }}</h3>
+                    <span>Submitted {{ proposal.created_at|date:"M j, Y" }}{% if proposal.file %} &middot; <a href="{{ proposal.file.url }}" class="auth-link">View file</a>{% endif %}</span>
+                </div>
+                <span class="status-pill status-{{ proposal.status }}">{{ proposal.get_status_display }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="dash-empty">
+            <p>You haven't submitted any proposals yet.</p>
+        </div>
+        {% endif %}
+    </section>
+</main>
+
 </body>
 </html>
