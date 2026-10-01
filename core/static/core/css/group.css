@@ -1,0 +1,21 @@
+/* Group page — matches the Figma mock */
+.gp-wrap{max-width:1220px;margin:0 auto;padding:26px 32px 60px}
+.gp-top{position:relative;display:flex;justify-content:flex-end;align-items:center;gap:6px;margin-bottom:12px;color:#9aa0a8}
+.gp-add{display:grid;place-items:center;padding:0;border:0;background:none;color:#9aa0a8;cursor:pointer}
+.gp-add:hover,.gp-filter summary:hover{color:var(--blue-deep)}
+.gp-filter summary{display:grid;place-items:center;list-style:none;cursor:pointer;color:#7d848c}
+.gp-filter summary::-webkit-details-marker{display:none}
+.gp-menu{position:absolute;right:0;top:36px;z-index:10;min-width:170px;padding:8px;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(28,36,48,.18)}
+.gp-menu p{margin:6px 8px 2px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.gp-menu a{display:block;padding:6px 8px;border-radius:8px;font-size:12px;color:var(--ink);text-decoration:none}
+.gp-menu a:hover{background:#eef3f7}
+.gp-menu a.on{color:var(--blue-deep);font-weight:600}
+.gp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px}
+.gp-card{display:flex;justify-content:space-between;gap:20px;min-height:172px;padding:18px 30px 18px 30px;background:#fff;border-radius:14px;box-shadow:0 1px 3px rgba(28,36,48,.28)}
+.gp-text{min-width:0}
+.gp-text h2{margin:10px 0 2px;font-size:24px;font-weight:500;line-height:1.2;color:#000;overflow-wrap:anywhere}
+.gp-text p{margin:0;font-size:11px;color:#000;overflow-wrap:anywhere}
+.gp-img{flex:0 0 138px;width:138px;height:138px;align-self:center;overflow:hidden}
+.gp-img img,.gp-img svg{display:block;width:100%;height:100%;object-fit:cover}
+.gp-empty{grid-column:1/-1;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+@media (max-width:820px){.gp-grid{grid-template-columns:1fr}.gp-wrap{padding:20px 16px 48px}}

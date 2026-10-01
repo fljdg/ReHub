@@ -1,0 +1,127 @@
+{% extends 'core/research_base.html' %}
+{% block title %}ReHub | {{ proposal.title }}{% endblock %}
+{% block content %}
+<main class="rs-wrap">
+    <div class="rs-topline">
+        <a class="rs-back" href="{% url 'core:research' %}">&larr; Back</a>
+        <span class="rs-tools">
+            <a href="{% url 'core:calendar' %}" aria-label="Open calendar" title="Calendar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8 3.5v3M16 3.5v3"/></svg></a>
+            <button type="button" disabled aria-label="Group (not available yet)" title="Group (not available yet)"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2 19c0-3 3-5 6-5s6 2 6 5zM14 14.3c.6-.2 1.300-.3 2-.3 3 0 6 2 6 5h-6.500z"/></svg></button>
+        </span>
+    </div>
+
+    <div class="rs-detail">
+        <aside class="rs-side">
+            <section class="rs-box rs-title">
+                <span class="rs-badge">My Research</span>
+                <h2>{{ proposal.title }}</h2>
+                {% include 'core/_ring.html' with percent=percent size=88 %}
+            </section>
+
+            <section class="rs-box">
+                <h3>Next Deadline</h3>
+                {% if next_deadline %}
+                <div class="rs-chip"><span class="rs-tag red">{{ next_deadline.due_date|date:"m.d.y" }}</span><span>{{ next_deadline.title }}</span></div>
+                {% else %}<p class="rs-muted">No upcoming deadlines.</p>{% endif %}
+
+                <h3 class="rs-gap">Current Milestone</h3>
+                {% if current_milestone %}
+                <div class="rs-chip">
+                    <span class="rs-tag {% if current_milestone.status == 'done' %}green{% elif current_milestone.status == 'in_progress' %}amber{% else %}red{% endif %}">{{ current_milestone.get_status_display }}</span>
+                    <span>{{ current_milestone.title }}</span>
+                </div>
+                {% else %}<p class="rs-muted">No milestones set yet.</p>{% endif %}
+            </section>
+
+            <section class="rs-box">
+                <h3>Submission Calendar</h3>
+                <table class="rs-cal" aria-label="{{ month_label }}">
+                    <thead><tr><th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th></tr></thead>
+                    <tbody>
+                    {% for week in weeks %}<tr>
+                        {% for day in week %}<td class="{% if day.weekday == 6 %}sun{% endif %}{% if day == today %} today{% elif day in due_days %} due{% endif %}">{% if day.month == today.month %}<span>{{ day.day }}</span>{% endif %}</td>{% endfor %}
+                    </tr>{% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </aside>
+
+        <div class="rs-right">
+            {% for tab in tabs %}
+            <section class="rs-main rs-pane" {% if tab.n != active %}hidden{% endif %}>
+                <form method="post" enctype="multipart/form-data" class="rs-bar">
+                    {% csrf_token %}
+                    <input type="hidden" name="chapter" value="{{ tab.n }}">
+                    <label class="rs-up">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16V8M8.5 11.5L12 8l3.5 3.5"/></svg>
+                        <span class="rs-up-text" data-default="{% if tab.file %}{{ tab.file.name|cut:'proposals/'|cut:'chapters/' }}{% else %}{{ tab.prompt }}{% endif %}">{% if tab.file %}{{ tab.file.name|cut:'proposals/'|cut:'chapters/' }}{% else %}{{ tab.prompt }}{% endif %}</span>
+                        <input type="file" name="file" class="rs-file" accept=".pdf,.doc,.docx" hidden>
+                    </label>
+                    <button type="submit" class="rs-turn" disabled>Turn in</button>
+                </form>
+                {% if tab.n == active %}{% for error in errors %}<p class="rs-error">{{ error }}</p>{% endfor %}{% endif %}
+                <div class="rs-work">
+                    <div class="rs-preview">
+                        {% if tab.file %}
+                            {% if tab.file.name|lower|slice:"-4:" == ".pdf" %}<iframe src="{{ tab.file.url }}" title="{{ tab.label }} preview"></iframe>
+                            {% else %}<a class="auth-link" href="{{ tab.file.url }}">Open {{ tab.file.name|cut:'proposals/'|cut:'chapters/' }}</a>{% endif %}
+                        {% else %}Nothing turned in for {{ tab.label }} yet.{% endif %}
+                    </div>
+                    <div class="rs-feed">
+                        <h3>Status &amp; Feedback</h3>
+                        {% if tab.n == 0 %}
+                            {% for e in evaluations %}
+                            <article class="rs-note">
+                                <header>
+                                    <span class="rs-tag {% if e.decision == 'approve' %}green{% elif e.decision == 'reject' %}red{% else %}amber{% endif %}">{% if e.decision == 'approve' %}Approved{% elif e.decision == 'reject' %}Rejected{% else %}Needs revision{% endif %}</span>
+                                    <time>{{ e.evaluated_at|date:"M j, Y" }}</time>
+                                </header>
+                                {{ e.comments }}
+                            </article>
+                            {% empty %}<p class="rs-muted">No feedback yet. Current status: {{ tab.status }}.</p>{% endfor %}
+                        {% elif tab.file %}
+                            <article class="rs-note">
+                                <header><span class="rs-tag {{ tab.tag }}">{{ tab.status }}</span></header>
+                                {{ tab.feedback|default:"Waiting for your adviser's feedback." }}
+                            </article>
+                        {% else %}<p class="rs-muted">Turn in your {{ tab.label }} to get feedback.</p>{% endif %}
+                        <button type="button" class="rs-next">Next &rarr;</button>
+                    </div>
+                </div>
+            </section>
+            {% endfor %}
+
+            <div class="rs-tabs" role="tablist">
+                {% for tab in tabs %}<button type="button" class="rs-tab" role="tab" aria-selected="{% if tab.n == active %}true{% else %}false{% endif %}">{{ tab.label }}</button>{% endfor %}
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        var tabs = [].slice.call(document.querySelectorAll('.rs-tab'));
+        var panes = [].slice.call(document.querySelectorAll('.rs-pane'));
+        function show(i) {
+            tabs.forEach(function (t, n) { t.setAttribute('aria-selected', n === i); });
+            panes.forEach(function (p, n) { p.hidden = n !== i; });
+        }
+        tabs.forEach(function (t, n) { t.addEventListener('click', function () { show(n); }); });
+        [].forEach.call(document.querySelectorAll('.rs-next'), function (b) {
+            b.addEventListener('click', function () {
+                var i = panes.findIndex(function (p) { return !p.hidden; });
+                show((i + 1) % panes.length);
+            });
+        });
+        panes.forEach(function (p) {
+            var f = p.querySelector('.rs-file'), label = p.querySelector('.rs-up-text'), btn = p.querySelector('.rs-turn');
+            f.addEventListener('change', function () {
+                label.textContent = f.files[0] ? f.files[0].name : label.dataset.default;
+                btn.disabled = !f.files[0];
+            });
+        });
+    })();
+</script>
+{% endblock %}

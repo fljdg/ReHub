@@ -1,0 +1,43 @@
+{% extends 'core/research_base.html' %}
+{% load static %}
+{% block title %}ReHub | Setup Profile{% endblock %}
+{% block body_class %}app-body sp-body{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'core/css/profile.css' %}">
+<main class="sp-wrap">
+    <h1 class="title-gradient">Setup Profile</h1>
+    <p>Please setup your profile. This will help others to know you.</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label class="sp-avatar" title="Upload a profile photo">
+            <svg id="sp-art" viewBox="0 0 160 160" aria-hidden="true">
+                <ellipse cx="80" cy="42" rx="34" ry="14" fill="#fff"/><ellipse cx="62" cy="38" rx="18" ry="14" fill="#fff"/><ellipse cx="94" cy="34" rx="16" ry="14" fill="#fff"/>
+                <path d="M0 120c30-24 70-26 160-8v48H0z" fill="#c6e08a"/><path d="M40 160c20-34 70-40 120-30v30z" fill="#8aa800"/>
+            </svg>
+            <img id="sp-preview" alt="" hidden>
+            <span class="sp-up" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position:static;width:16px;height:16px"><path d="M12 16V6M7.5 10.5 12 6l4.5 4.5M6 19h12"/></svg></span>
+            <input type="file" name="avatar" id="sp-file" accept="image/*" hidden>
+        </label>
+
+        {% for error in errors %}<p class="sp-error">{{ error }}</p>{% endfor %}
+        <input class="sp-field" type="text" name="program" placeholder="Program/Department" value="{{ request.POST.program|default:profile.program }}" required>
+
+        <div class="sp-actions">
+            <button type="submit" class="sp-btn">Continue</button>
+            <a class="sp-skip" href="{% url 'core:dashboard' %}">Skip for now</a>
+        </div>
+    </form>
+</main>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.getElementById('sp-file').addEventListener('change', function (e) {
+        var f = e.target.files[0], img = document.getElementById('sp-preview');
+        if (!f) return;
+        img.src = URL.createObjectURL(f);
+        img.hidden = false;
+        document.getElementById('sp-art').style.display = 'none';
+    });
+</script>
+{% endblock %}

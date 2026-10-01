@@ -1,0 +1,27 @@
+/* Setup Profile + My Profile (edit) */
+.sp-body{background:#fff}
+.sp-wrap{max-width:520px;margin:0 auto;padding:56px 20px 80px;text-align:center}
+.sp-wrap h1{margin:0;font-size:2rem;font-weight:700}
+.sp-wrap>p{margin:4px 0 0;font-size:.78rem;color:var(--muted)}
+.sp-avatar{position:relative;display:block;width:160px;height:160px;margin:40px auto 38px;border-radius:50%;overflow:hidden;cursor:pointer;background:linear-gradient(#c8e8fb,#f3fbff 62%)}
+.sp-avatar svg,.sp-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sp-up{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.9);color:#3b4350}
+.sp-avatar:focus-within{outline:2px solid var(--blue);outline-offset:3px}
+.sp-field,.pf-dialog .field{display:block;width:min(360px,100%);margin:0 auto 14px;padding:13px 16px;border:0;border-radius:10px;background:#eceef0;box-shadow:0 2px 3px rgba(28,36,48,.18);font:italic .95rem Poppins,sans-serif;color:#333}
+.sp-actions{display:grid;gap:10px;justify-items:center;margin-top:22px}
+.sp-btn{padding:10px 34px;border:0;border-radius:999px;background:var(--gradient);color:#fff;font:600 .9rem Poppins,sans-serif;cursor:pointer}
+.sp-skip{font-size:.8rem;color:var(--muted)}
+.sp-error,.pf-error{margin:0 0 10px;font-size:.8rem;color:#c8323c}
+
+.profile-cover[style]{background-size:cover;background-position:center}
+img.profile-avatar{object-fit:cover}
+.milestones-track{overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none}
+.milestones-track::-webkit-scrollbar{display:none}
+.pf-dialog{width:min(480px,92vw);padding:24px;border:0;border-radius:16px;box-shadow:0 10px 28px rgba(2,78,123,.25)}
+.pf-dialog::backdrop{background:rgba(28,36,48,.45)}
+.pf-dialog h2{margin:0 0 14px;font-size:1.1rem}
+.pf-dialog .field{width:100%;font-style:normal}
+.pf-dialog label.pf-file{display:block;margin:0 0 10px;font-size:.78rem;color:var(--muted)}
+.pf-dialog .pf-file input{display:block;margin-top:4px;font-size:.8rem}
+.pf-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+.pf-ghost{padding:8px 16px;border:1px solid #d9dde2;border-radius:8px;background:#fff;font:500 .8rem Poppins,sans-serif;cursor:pointer}

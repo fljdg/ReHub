@@ -1,0 +1,16 @@
+/* Top header — matches the Figma mock (loads after style.css and overrides it) */
+.app-nav{gap:24px;padding:7px 56px;background:#eceef0;border-bottom:0;box-shadow:0 2px 6px rgba(28,36,48,.14);position:sticky;top:0;z-index:20}
+.app-nav .logo{gap:6px}
+.app-nav .logo img{width:34px;height:34px}
+.app-nav .logo-text{color:#0a7cc4;font-size:1.15rem;font-weight:600}
+.app-search{flex:0 1 36%;max-width:none;padding:6px 14px;border-radius:12px;box-shadow:0 2px 4px rgba(28,36,48,.2);gap:8px}
+.app-search input{font-size:.9rem;font-style:italic;color:#333}
+.app-search input::placeholder{color:#555;opacity:1}
+.app-nav-links{flex:1;justify-content:center;gap:22px}
+.app-nav-links a,.app-nav-right a{gap:1px;color:#636a72;font-size:.6rem;font-weight:500}
+.app-nav-links a svg,.app-nav-right a svg{width:26px;height:26px}
+.app-nav-links a:hover,.app-nav-links a.active,.app-nav-right a:hover,.app-nav-right a.active{color:var(--blue-deep)}
+.app-nav-right{gap:22px}
+.app-nav-right .nav-avatar{width:26px;height:26px;font-size:.58rem;object-fit:cover;border-radius:50%}
+.app-nav a:focus-visible,.app-search:focus-within{outline:2px solid var(--blue);outline-offset:2px}
+@media (max-width:900px){.app-nav{padding:10px 16px;position:static}.app-search{flex-basis:100%;order:2}}

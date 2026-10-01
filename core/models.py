@@ -110,3 +110,50 @@ class Notification(models.Model):
 
     def __str__(self):
         return self.message
+
+
+class ChapterSubmission(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('revision', 'Needs Revision'),
+        ('rejected', 'Rejected'),
+    ]
+    proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE, related_name='chapters')
+    chapter = models.PositiveSmallIntegerField()
+    file = models.FileField(upload_to='chapters/')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    feedback = models.TextField(blank=True)
+    submitted_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['chapter']
+        unique_together = ('proposal', 'chapter')
+
+    def __str__(self):
+        return f"Chapter {self.chapter} - {self.proposal.title}"
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    program = models.CharField(max_length=150, blank=True)
+    bio = models.TextField(max_length=300, blank=True)
+    avatar = models.FileField(upload_to='avatars/', blank=True)
+    banner = models.FileField(upload_to='banners/', blank=True)
+
+    def __str__(self):
+        return f"Profile of {self.user.username}"
+
+
+class StudyGroup(models.Model):
+    name = models.CharField(max_length=120)
+    image = models.FileField(upload_to='groups/', blank=True)
+    members = models.ManyToManyField(User, related_name='study_groups', blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_groups')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.name

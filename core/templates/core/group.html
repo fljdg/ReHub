@@ -1,0 +1,78 @@
+{% extends 'core/research_base.html' %}
+{% load static %}
+{% block title %}ReHub | Group{% endblock %}
+{% block head_extra %}<link rel="stylesheet" href="{% static 'core/css/group.css' %}">{% endblock %}
+{% block content %}
+<main class="gp-wrap">
+    <div class="gp-top">
+        <button type="button" class="gp-add" id="gp-open" aria-label="Add group">
+            <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M12 6.500v11M6.500 12h11" stroke="#fff" stroke-width="2.200" stroke-linecap="round"/></svg>
+        </button>
+        <details class="gp-filter">
+            <summary aria-label="Filter groups">
+                <svg viewBox="0 0 28 24" width="28" height="24" fill="none" stroke="currentColor" stroke-width="1.600" stroke-linecap="round" aria-hidden="true"><path d="M2 5h24M2 12h24M2 19h24"/><circle cx="17" cy="5" r="2.300" fill="#eceef0"/><circle cx="9" cy="12" r="2.300" fill="#eceef0"/><circle cx="19" cy="19" r="2.300" fill="#eceef0"/></svg>
+            </summary>
+            <div class="gp-menu">
+                <p>Show</p>
+                <a href="?show=all&sort={{ sort }}" {% if show != 'mine' %}class="on"{% endif %}>All groups</a>
+                <a href="?show=mine&sort={{ sort }}" {% if show == 'mine' %}class="on"{% endif %}>My groups</a>
+                <p>Sort by</p>
+                <a href="?show={{ show }}&sort=newest" {% if sort != 'name' %}class="on"{% endif %}>Newest</a>
+                <a href="?show={{ show }}&sort=name" {% if sort == 'name' %}class="on"{% endif %}>Name (A–Z)</a>
+            </div>
+        </details>
+    </div>
+
+    <section class="gp-grid">
+        {% for card in cards %}
+        <article class="gp-card">
+            <div class="gp-text">
+                <h2>{{ card.group.name }}</h2>
+                <p>{{ card.names|default:'No members yet'|truncatechars:120 }}</p>
+            </div>
+            <div class="gp-img">
+                {% if card.group.image %}
+                <img src="{{ card.group.image.url }}" alt="">
+                {% else %}
+                <svg viewBox="0 0 138 138" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                    <defs><linearGradient id="gp-sky-{{ forloop.counter }}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe6fd"/><stop offset="1" stop-color="#f4fbff"/></linearGradient></defs>
+                    <rect width="138" height="138" fill="url(#gp-sky-{{ forloop.counter }})"/>
+                    <g fill="#fff"><rect x="40" y="26" width="58" height="14" rx="7"/><circle cx="72" cy="26" r="13"/><circle cx="55" cy="31" r="8"/></g>
+                    <path d="M0 98c24-12 46-14 68-6 30 8 50 4 70 6v40H0z" fill="#c4de7c"/>
+                    <path d="M0 114c30-8 58-10 90-2 18 4 36 4 48 2v24H0z" fill="#8aa500"/>
+                </svg>
+                {% endif %}
+            </div>
+        </article>
+        {% empty %}
+        <div class="gp-card gp-empty">{% if show == 'mine' %}You aren't in any group yet.{% else %}No groups yet. Select + to create one.{% endif %}</div>
+        {% endfor %}
+    </section>
+</main>
+
+<dialog class="rs-dialog" id="gp-dialog">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2>New group</h2>
+        {% for error in errors %}<p class="rs-error">{{ error }}</p>{% endfor %}
+        <input class="field" type="text" name="name" placeholder="Group name" value="{{ request.POST.name|default:'' }}" maxlength="120" required>
+        <textarea class="field" name="members" rows="3" placeholder="Member usernames, separated by commas (you're added automatically)">{{ request.POST.members|default:'' }}</textarea>
+        <input class="field" type="file" name="image" accept="image/*">
+        <div class="rs-actions">
+            <button type="button" class="rs-ghost" id="gp-close">Cancel</button>
+            <button type="submit" class="rs-turn">Create group</button>
+        </div>
+    </form>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    (function () {
+        var d = document.getElementById('gp-dialog');
+        document.getElementById('gp-open').onclick = function () { d.showModal(); };
+        document.getElementById('gp-close').onclick = function () { d.close(); };
+        {% if errors %}d.showModal();{% endif %}
+    })();
+</script>
+{% endblock %}
