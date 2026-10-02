@@ -12,7 +12,7 @@
         {% else %}
             <p class="temp-muted">
                 {{ results.total }} result{{ results.total|pluralize }} for &ldquo;{{ q }}&rdquo;
-                {% if request.user.is_staff %}&middot; searching everyone&rsquo;s work (staff){% else %}&middot; searching your work{% endif %}
+                &middot; searching your groups&rsquo; research
             </p>
         {% endif %}
     </section>
@@ -25,13 +25,13 @@
 
     {% if results.proposals %}
     <section class="temp-card">
-        <h2>Proposals</h2>
+        <h2>Research</h2>
         <div class="temp-list">
             {% for proposal in results.proposals %}
             <div class="temp-item">
-                <strong>{{ proposal.title }}</strong>
-                <span><span class="temp-badge">{{ proposal.get_status_display }}</span>
-                    &nbsp;{{ proposal.created_at|date:"M j, Y" }}{% if request.user.is_staff %} &middot; by {{ proposal.submitted_by.get_full_name|default:proposal.submitted_by.username }}{% endif %}</span>
+                <strong><a href="{% url 'core:research_detail' proposal.pk %}">{{ proposal.title }}</a></strong>
+                <span><span class="temp-badge">{{ proposal.percent }}% approved</span>
+                    &nbsp;{{ proposal.group.name }} &middot; {{ proposal.created_at|date:"M j, Y" }}</span>
                 {% if proposal.description %}<p>{{ proposal.description|truncatechars:160 }}</p>{% endif %}
             </div>
             {% endfor %}
@@ -39,29 +39,14 @@
     </section>
     {% endif %}
 
-    {% if results.projects %}
+    {% if results.tabs %}
     <section class="temp-card">
-        <h2>Projects</h2>
+        <h2>Tabs</h2>
         <div class="temp-list">
-            {% for project in results.projects %}
+            {% for tab in results.tabs %}
             <div class="temp-item">
-                <strong>{{ project.title }}</strong>
-                <span><span class="temp-badge">{{ project.get_status_display }}</span> &nbsp;Started {{ project.start_date|date:"M j, Y" }}</span>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
-
-    {% if results.milestones %}
-    <section class="temp-card">
-        <h2>Milestones</h2>
-        <div class="temp-list">
-            {% for milestone in results.milestones %}
-            <div class="temp-item">
-                <strong>{{ milestone.title }}</strong>
-                <span><span class="temp-badge">{{ milestone.get_status_display }}</span>
-                    &nbsp;Due {{ milestone.due_date|date:"M j, Y" }} &middot; {{ milestone.project.title }}</span>
+                <strong><a href="{% url 'core:research_detail' tab.proposal_id %}?tab={{ tab.position }}">{{ tab.title }}</a></strong>
+                <span>{{ tab.proposal.title }}{% if tab.due_date %} &middot; due {{ tab.due_date|date:"M j, Y" }}{% endif %}</span>
             </div>
             {% endfor %}
         </div>

@@ -1104,3 +1104,5 @@ img.profile-avatar { background-image: none; }
     .app-nav { flex-wrap: wrap; gap: 14px; padding: 12px 16px; }
     .app-nav-links { order: 3; width: 100%; justify-content: space-around; gap: 10px; }
 }
+/* calendar: overdue chapter */
+.cal-overdue, .cal-pill-overdue { background: #fdeceb; color: #b3261e; }

@@ -156,6 +156,10 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Uploaded files (Proposal.file, ProposalRevision.revised_file)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+# Private research files (NOT served by the web server; downloads go through a permission-checked view)
+PRIVATE_MEDIA_ROOT = BASE_DIR / 'private_uploads'
+MAX_UPLOAD_MB = 20
+ALLOWED_UPLOAD_EXTENSIONS = ['.pdf', '.doc', '.docx']
 
 
 # Auth redirects

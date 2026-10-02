@@ -22,7 +22,7 @@
     <div class="dash-welcome-row">
         <div>
             <h1>Calendar</h1>
-            <p>Your project milestone deadlines at a glance.</p>
+            <p>Your chapter due dates at a glance.</p>
         </div>
         <div class="cal-nav">
             <a href="?month={{ prev_month }}" class="icon-btn" aria-label="Previous month">&lsaquo;</a>
@@ -38,7 +38,7 @@
             <div class="cal-cell{% if not cell.in_month %} muted{% endif %}{% if cell.is_today %} today{% endif %}">
                 <span class="cal-date">{{ cell.date.day }}</span>
                 {% for m in cell.events %}
-                <span class="cal-event cal-{{ m.status }}" title="{{ m.project.title }}: {{ m.title }}">{{ m.title }}</span>
+                <span class="cal-event cal-{{ m.status }}" title="{{ m.research }}: {{ m.title }}">{{ m.title }}</span>
                 {% endfor %}
             </div>
             {% endfor %}
@@ -53,15 +53,15 @@
             <div class="recent-row">
                 <div class="recent-row-main">
                     <h3>{{ m.title }}</h3>
-                    <span>{{ m.project.title }} &middot; due {{ m.due_date|date:"M j, Y" }}</span>
+                    <span>{{ m.research }} &middot; due {{ m.due_date|date:"M j, Y" }}</span>
                 </div>
-                <span class="status-pill cal-pill-{{ m.status }}">{{ m.get_status_display }}</span>
+                <span class="status-pill cal-pill-{{ m.status }}">{{ m.label }}</span>
             </div>
             {% endfor %}
         </div>
         {% else %}
         <div class="dash-empty">
-            <p>No upcoming milestones yet. Deadlines appear here once a project has milestones.</p>
+            <p>No upcoming due dates yet. They appear after your evaluator sets the plan.</p>
         </div>
         {% endif %}
     </section>

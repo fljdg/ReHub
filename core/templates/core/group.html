@@ -13,19 +13,36 @@
                 <svg viewBox="0 0 28 24" width="28" height="24" fill="none" stroke="currentColor" stroke-width="1.600" stroke-linecap="round" aria-hidden="true"><path d="M2 5h24M2 12h24M2 19h24"/><circle cx="17" cy="5" r="2.300" fill="#eceef0"/><circle cx="9" cy="12" r="2.300" fill="#eceef0"/><circle cx="19" cy="19" r="2.300" fill="#eceef0"/></svg>
             </summary>
             <div class="gp-menu">
-                <p>Show</p>
-                <a href="?show=all&sort={{ sort }}" {% if show != 'mine' %}class="on"{% endif %}>All groups</a>
-                <a href="?show=mine&sort={{ sort }}" {% if show == 'mine' %}class="on"{% endif %}>My groups</a>
                 <p>Sort by</p>
-                <a href="?show={{ show }}&sort=newest" {% if sort != 'name' %}class="on"{% endif %}>Newest</a>
-                <a href="?show={{ show }}&sort=name" {% if sort == 'name' %}class="on"{% endif %}>Name (A–Z)</a>
+                <a href="?sort=newest" {% if sort != 'name' %}class="on"{% endif %}>Newest</a>
+                <a href="?sort=name" {% if sort == 'name' %}class="on"{% endif %}>Name (A–Z)</a>
             </div>
         </details>
     </div>
 
+    {% for message in messages %}<p class="gp-msg {{ message.tags }}">{{ message }}</p>{% endfor %}
+
+    {% if invites %}
+    <section class="gp-panel">
+        <h3>Invitations</h3>
+        {% for inv in invites %}
+        <div class="gp-row">
+            <div>
+                <strong>{{ inv.group.name }}</strong>
+                <p class="rs-muted">Invited by {% if inv.invited_by %}{{ inv.invited_by.get_full_name|default:inv.invited_by.username }}{% else %}the evaluator{% endif %}</p>
+            </div>
+            <div class="gp-btns">
+                <form method="post" action="{% url 'core:invite_decline' inv.pk %}">{% csrf_token %}<button type="submit" class="rs-ghost">Decline</button></form>
+                <form method="post" action="{% url 'core:invite_accept' inv.pk %}">{% csrf_token %}<button type="submit" class="rs-turn">Accept</button></form>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+
     <section class="gp-grid">
         {% for card in cards %}
-        <article class="gp-card">
+        <a class="gp-card" href="{% url 'core:group_detail' card.group.pk %}">
             <div class="gp-text">
                 <h2>{{ card.group.name }}</h2>
                 <p>{{ card.names|default:'No members yet'|truncatechars:120 }}</p>
@@ -43,9 +60,9 @@
                 </svg>
                 {% endif %}
             </div>
-        </article>
+        </a>
         {% empty %}
-        <div class="gp-card gp-empty">{% if show == 'mine' %}You aren't in any group yet.{% else %}No groups yet. Select + to create one.{% endif %}</div>
+        <div class="gp-card gp-empty">Create your group first. Select + to start one, or accept an invitation above.</div>
         {% endfor %}
     </section>
 </main>
@@ -56,7 +73,7 @@
         <h2>New group</h2>
         {% for error in errors %}<p class="rs-error">{{ error }}</p>{% endfor %}
         <input class="field" type="text" name="name" placeholder="Group name" value="{{ request.POST.name|default:'' }}" maxlength="120" required>
-        <textarea class="field" name="members" rows="3" placeholder="Member usernames, separated by commas (you're added automatically)">{{ request.POST.members|default:'' }}</textarea>
+        <textarea class="field" name="emails" rows="3" placeholder="Invite by email (optional), separated by commas. You become the evaluator.">{{ request.POST.emails|default:'' }}</textarea>
         <input class="field" type="file" name="image" accept="image/*">
         <div class="rs-actions">
             <button type="button" class="rs-ghost" id="gp-close">Cancel</button>

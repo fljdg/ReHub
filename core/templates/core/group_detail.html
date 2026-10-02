@@ -1,0 +1,88 @@
+{% extends 'core/research_base.html' %}
+{% load static %}
+{% block title %}ReHub | {{ group.name }}{% endblock %}
+{% block head_extra %}<link rel="stylesheet" href="{% static 'core/css/group.css' %}">{% endblock %}
+{% block content %}
+<main class="gp-wrap">
+    <div class="rs-topline"><a class="rs-back" href="{% url 'core:group' %}">&larr; Back to groups</a></div>
+
+    {% for message in messages %}<p class="gp-msg {{ message.tags }}">{{ message }}</p>{% endfor %}
+
+    <section class="gp-panel">
+        <div class="gp-row">
+            <div>
+                <h2 class="gp-name">{{ group.name }}</h2>
+                <p class="rs-muted">You are {% if is_evaluator %}the evaluator of this group{% else %}a member of this group{% endif %}.</p>
+            </div>
+            {% if not is_evaluator %}
+            <form method="post" action="{% url 'core:group_leave' group.pk %}" onsubmit="return confirm('Leave this group?');">
+                {% csrf_token %}<button type="submit" class="rs-ghost">Leave group</button>
+            </form>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="gp-panel">
+        <h3>Research</h3>
+        {% if research %}
+        <a class="rs-card" href="{% url 'core:research_detail' research.pk %}">
+            <div>
+                <h2>{{ research.title }}</h2>
+                <p>{{ progress }}% approved</p>
+            </div>
+            <span class="rs-badge">Open</span>
+        </a>
+        {% elif is_evaluator %}
+        <p class="rs-muted">Waiting for a member to upload the proposal. After that you can set the deadline and chapters.</p>
+        {% else %}
+        <p class="rs-muted">No research yet. Upload your group's proposal to start (PDF, DOC or DOCX, max 20 MB).</p>
+        <form method="post" action="{% url 'core:research_new' group.pk %}" enctype="multipart/form-data" class="gp-form">
+            {% csrf_token %}
+            <input class="field" type="text" name="title" placeholder="Research title" maxlength="255" required>
+            <textarea class="field" name="description" rows="3" placeholder="Short description (optional)"></textarea>
+            <input class="field" type="file" name="file" accept=".pdf,.doc,.docx" required>
+            <button type="submit" class="rs-turn">Upload proposal</button>
+        </form>
+        {% endif %}
+    </section>
+
+    <section class="gp-panel">
+        <h3>Members</h3>
+        {% for item in members %}
+        <div class="gp-row">
+            <div>
+                <strong>{{ item.label }}</strong>
+                <span class="rs-tag {% if item.m.role == 'evaluator' %}amber{% else %}green{% endif %}">{{ item.m.get_role_display }}</span>
+            </div>
+            {% if is_evaluator and item.m.role != 'evaluator' %}
+            <form method="post" action="{% url 'core:member_remove' group.pk item.m.pk %}" onsubmit="return confirm('Remove this member?');">
+                {% csrf_token %}<button type="submit" class="rs-ghost">Remove</button>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </section>
+
+    {% if is_evaluator %}
+    <section class="gp-panel">
+        <h3>Invite members</h3>
+        <form method="post" action="{% url 'core:group_invite' group.pk %}" class="gp-form">
+            {% csrf_token %}
+            <textarea class="field" name="emails" rows="2" placeholder="Email addresses, separated by commas. They need an account already." required></textarea>
+            <button type="submit" class="rs-turn">Send invite</button>
+        </form>
+        {% for item in waiting %}
+        <div class="gp-row">
+            <div>
+                <strong>{{ item.label }}</strong>
+                <span class="rs-tag {% if item.m.status == 'declined' %}red{% else %}amber{% endif %}">{{ item.m.get_status_display }}</span>
+            </div>
+            <form method="post" action="{% url 'core:member_remove' group.pk item.m.pk %}">
+                {% csrf_token %}<button type="submit" class="rs-ghost">{% if item.m.status == 'invited' %}Cancel invite{% else %}Dismiss{% endif %}</button>
+            </form>
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+</main>
+{% endblock %}

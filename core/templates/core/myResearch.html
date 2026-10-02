@@ -1,48 +1,35 @@
 {% extends 'core/research_base.html' %}
 {% block content %}
 <main class="rs-wrap">
-    <div class="rs-top">
-        <button type="button" class="rs-add" id="rs-open" aria-label="Add research proposal">+</button>
-    </div>
+    {% for message in messages %}<p class="gp-msg {{ message.tags }}">{{ message }}</p>{% endfor %}
 
     <section class="rs-list">
+        {% if needs_group %}
+        <a class="rs-card rs-empty" href="{% url 'core:group' %}">Create your group first. Research lives inside a group. Select here to go to the Group page.</a>
+        {% endif %}
+
         {% for row in rows %}
         <a class="rs-card" href="{% url 'core:research_detail' row.proposal.pk %}">
             <div>
-                <h2>{{ row.proposal.title }}</h2><span class="rs-badge">My Research</span>
-                <p>{{ row.proposal.description|truncatechars:140 }}</p>
+                <h2>{{ row.proposal.title }}</h2><span class="rs-badge">{{ row.proposal.group.name }}</span>
+                <p>{% if row.role == 'evaluator' %}You are the evaluator{% else %}You are a member{% endif %}{% if row.proposal.description %} &middot; {{ row.proposal.description|truncatechars:120 }}{% endif %}</p>
             </div>
             {% include 'core/_ring.html' with percent=row.percent size=110 %}
         </a>
-        {% empty %}
-        <div class="rs-card rs-empty">You haven't added any research yet. Select + to submit a proposal.</div>
         {% endfor %}
+
+        {% for g in groups_without_research %}
+        <a class="rs-card" href="{% url 'core:group_detail' g.pk %}">
+            <div>
+                <h2>{{ g.name }}</h2><span class="rs-badge">No research yet</span>
+                <p>Open the group to upload the proposal.</p>
+            </div>
+        </a>
+        {% endfor %}
+
+        {% if not rows and not groups_without_research and not needs_group %}
+        <div class="rs-card rs-empty">{% if has_invites %}You have a group invitation waiting on the Group page.{% else %}Nothing here yet.{% endif %}</div>
+        {% endif %}
     </section>
 </main>
-
-<dialog class="rs-dialog" id="rs-dialog">
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <h2>New research proposal</h2>
-        {% for error in errors %}<p class="rs-error">{{ error }}</p>{% endfor %}
-        <input class="field" type="text" name="title" placeholder="Proposal title" value="{{ request.POST.title|default:'' }}" required>
-        <textarea class="field" name="description" rows="4" placeholder="Short description" required>{{ request.POST.description|default:'' }}</textarea>
-        <input class="field" type="file" name="file">
-        <div class="rs-actions">
-            <button type="button" class="rs-ghost" id="rs-close">Cancel</button>
-            <button type="submit" class="rs-turn">Submit proposal</button>
-        </div>
-    </form>
-</dialog>
-{% endblock %}
-
-{% block scripts %}
-<script>
-    (function () {
-        var d = document.getElementById('rs-dialog');
-        document.getElementById('rs-open').onclick = function () { d.showModal(); };
-        document.getElementById('rs-close').onclick = function () { d.close(); };
-        {% if errors %}d.showModal();{% endif %}
-    })();
-</script>
 {% endblock %}

@@ -47,7 +47,7 @@
                     {% for proposal in recent_proposals %}
                     <div class="milestone-card">
                         <h3>{{ proposal.title }}</h3>
-                        <span>{{ proposal.created_at|date:"M. Y" }} &ndash; {{ proposal.get_status_display }}</span>
+                        <span>{{ proposal.created_at|date:"M. Y" }} &ndash; {{ proposal.progress_label }}</span>
                     </div>
                     {% empty %}
                     <div class="milestone-card">

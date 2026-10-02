@@ -30,40 +30,62 @@
     <div class="stat-row">
         <div class="stat-card">
             <span class="stat-num">{{ proposal_count }}</span>
-            <span class="stat-label">Total Proposals</span>
+            <span class="stat-label">Research Projects</span>
         </div>
         <div class="stat-card">
             <span class="stat-num">{{ pending_count }}</span>
-            <span class="stat-label">Pending Review</span>
+            <span class="stat-label">Waiting for Review</span>
         </div>
         <div class="stat-card">
             <span class="stat-num">{{ approved_count }}</span>
-            <span class="stat-label">Approved</span>
+            <span class="stat-label">Approved Tabs</span>
         </div>
         <div class="stat-card">
             <span class="stat-num">{{ revision_count }}</span>
-            <span class="stat-label">Needs Revision</span>
+            <span class="stat-label">Returned</span>
         </div>
     </div>
 
+    {% if review_queue %}
     <section class="dash-recent">
-        <h2>Recent Proposals</h2>
+        <h2>Waiting for your review</h2>
+        <div class="recent-list">
+            {% for q in review_queue %}
+            <a class="recent-row" href="{% url 'core:research_detail' q.research_pk %}?tab={{ q.position }}" style="text-decoration:none;color:inherit">
+                <div class="recent-row-main">
+                    <h3>{{ q.title }} &middot; {{ q.research }}</h3>
+                    <span>Uploaded {{ q.submitted_at|date:"M j, Y" }}</span>
+                </div>
+                <span class="status-pill status-pending">Review</span>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="dash-recent">
+        <h2>Your Research</h2>
         {% if recent_proposals %}
         <div class="recent-list">
             {% for proposal in recent_proposals %}
-            <div class="recent-row">
+            <a class="recent-row" href="{% url 'core:research_detail' proposal.pk %}" style="text-decoration:none;color:inherit">
                 <div class="recent-row-main">
                     <h3>{{ proposal.title }}</h3>
-                    <span>Submitted {{ proposal.created_at|date:"M j, Y" }}</span>
+                    <span>{{ proposal.group.name }} &middot; started {{ proposal.created_at|date:"M j, Y" }}</span>
                 </div>
-                <span class="status-pill status-{{ proposal.status }}">{{ proposal.get_status_display }}</span>
-            </div>
+                <span class="status-pill status-{{ proposal.pill }}">{{ proposal.progress_label }}</span>
+            </a>
             {% endfor %}
+        </div>
+        {% elif needs_group %}
+        <div class="dash-empty">
+            <p>Create your group first. Your research lives inside a group.</p>
+            <a href="{% url 'core:group' %}" class="btn btn-outline">Go to Group</a>
         </div>
         {% else %}
         <div class="dash-empty">
-            <p>You haven't submitted a proposal yet.</p>
-            <a href="{% url 'core:research' %}" class="btn btn-outline">Get Started</a>
+            <p>No research yet. Open your group to upload the proposal.</p>
+            <a href="{% url 'core:group' %}" class="btn btn-outline">Open Group</a>
         </div>
         {% endif %}
     </section>

@@ -19,3 +19,20 @@
 .gp-img img,.gp-img svg{display:block;width:100%;height:100%;object-fit:cover}
 .gp-empty{grid-column:1/-1;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
 @media (max-width:820px){.gp-grid{grid-template-columns:1fr}.gp-wrap{padding:20px 16px 48px}}
+/* --- Groups rebuild (append to the bottom of core/static/core/css/group.css) --- */
+a.gp-card{color:inherit;text-decoration:none}
+a.gp-card:hover{box-shadow:0 3px 10px rgba(28,36,48,.28)}
+.gp-panel{margin-bottom:18px;padding:18px 26px;background:#fff;border-radius:14px;box-shadow:0 1px 3px rgba(28,36,48,.28)}
+.gp-panel h3{margin:0 0 10px;font-size:16px;font-weight:600}
+.gp-name{margin:0 0 2px;font-size:24px;font-weight:500}
+.gp-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0;border-top:1px solid #eceef0}
+.gp-row:first-of-type{border-top:0}
+.gp-row p{margin:2px 0 0}
+.gp-btns{display:flex;gap:8px}
+.gp-form{display:grid;gap:8px;max-width:520px;margin-bottom:10px}
+.gp-msg{margin:0 0 12px;padding:9px 14px;border-radius:8px;font-size:12px;background:#eef3f7;color:var(--ink)}
+.gp-msg.error{background:#fdecee;color:#c8323c}
+.gp-msg.success{background:#e6f7ef;color:#0d7a48}
+.gp-msg.warning{background:#fff6dc;color:#8a6500}
+.ev-panel{margin:14px 0 0;box-shadow:none;border:1px solid #d9dde2}
+.ev-panel details summary{cursor:pointer;margin-bottom:8px}

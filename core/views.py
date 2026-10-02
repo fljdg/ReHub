@@ -15,6 +15,7 @@ from django.db import IntegrityError
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
+from . import services
 from .models import Milestone, Proposal
 from .search import run_search
 
@@ -212,12 +213,7 @@ def logout_view(request):
 def _profile_context(user):
     """Small helper so every authenticated page gets the same nav/header data."""
     display_name = user.get_full_name() or user.username
-    if user.is_superuser:
-        role = 'Administrator'
-    elif user.is_staff:
-        role = 'Staff'
-    else:
-        role = 'Student'
+    role = 'Evaluator' if services.user_is_evaluator_anywhere(user) else 'Student'
     initials = ''.join(part[0] for part in display_name.split()[:2]).upper() or user.username[:2].upper()
     return {'display_name': display_name, 'role': role, 'initials': initials}
 
@@ -238,14 +234,15 @@ def _search_redirect(view):
 def dashboard(request):
     """Home page shown right after login (the nav's 'Home' tab)."""
     context = _profile_context(request.user)
-
-    proposals = Proposal.objects.filter(submitted_by=request.user)
-    context['proposal_count'] = proposals.count()
-    context['pending_count'] = proposals.filter(status='pending').count()
-    context['approved_count'] = proposals.filter(status='approved').count()
-    context['revision_count'] = proposals.filter(status='revision').count()
-    context['recent_proposals'] = proposals.order_by('-created_at')[:5]
-
+    stats = services.dashboard_stats(request.user)
+    context['stats'] = stats
+    context['proposal_count'] = stats['total']
+    context['pending_count'] = stats['waiting']
+    context['approved_count'] = stats['approved']
+    context['revision_count'] = stats['returned']
+    context['recent_proposals'] = stats['cards'][:5]
+    context['review_queue'] = stats['review_queue'][:6]
+    context['needs_group'] = stats['needs_group']
     return render(request, 'core/dashboard.html', context)
 
 
@@ -291,7 +288,7 @@ def assistant(request):
 @login_required
 @_search_redirect
 def calendar_view(request):
-    """The 'Calendar' tab: a month grid of your milestone deadlines (?month=YYYY-MM)."""
+    """The 'Calendar' tab: a month grid of your chapter due dates (?month=YYYY-MM)."""
     context = _profile_context(request.user)
     today = date.today()
 
@@ -302,14 +299,9 @@ def calendar_view(request):
         first = today.replace(day=1)
 
     weeks = pycalendar.Calendar(firstweekday=6).monthdatescalendar(first.year, first.month)
-    milestones = Milestone.objects.filter(
-        project__proposal__submitted_by=request.user,
-        due_date__range=(weeks[0][0], weeks[-1][-1]),
-    ).select_related('project').order_by('due_date')
-
     by_day = {}
-    for milestone in milestones:
-        by_day.setdefault(milestone.due_date, []).append(milestone)
+    for item in services.calendar_items(request.user, weeks[0][0], weeks[-1][-1], today):
+        by_day.setdefault(item.due_date, []).append(item)
 
     context['month_label'] = first.strftime('%B %Y')
     context['prev_month'] = (first - timedelta(days=1)).strftime('%Y-%m')
@@ -327,12 +319,7 @@ def calendar_view(request):
         ]
         for week in weeks
     ]
-    context['upcoming'] = (
-        Milestone.objects.filter(project__proposal__submitted_by=request.user, due_date__gte=today)
-        .exclude(status='done')
-        .select_related('project')
-        .order_by('due_date')[:6]
-    )
+    context['upcoming'] = services.upcoming_items(request.user, today)
     return render(request, 'core/calendar.html', context)
 
 

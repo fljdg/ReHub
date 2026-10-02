@@ -1,12 +1,13 @@
 """Search logic for the top search bar.
 
-Every word typed must appear in the title or description, so "climate survey" only
-matches things that mention both words. Students search their own work; staff
-(evaluators/admins) search everyone's.
+Every word typed must appear in the title (or description), so "climate survey" only
+matches things that mention both words. Everyone, staff included, searches only the
+research of the groups they are an active member of.
 """
 from django.db.models import Q
 
-from .models import Milestone, Project, Proposal
+from . import services
+from .models import Assignment, Proposal
 
 MAX_RESULTS = 25
 
@@ -24,25 +25,23 @@ def _terms_filter(terms, fields):
 def run_search(user, query):
     terms = query.split()[:6]
 
-    proposals = Proposal.objects.all() if user.is_staff else Proposal.objects.filter(submitted_by=user)
-    visible_ids = proposals.values('id')
+    proposals = Proposal.objects.filter(group__in=services.my_groups(user))
 
     found_proposals = list(
         proposals.filter(_terms_filter(terms, ['title', 'description']))
-        .select_related('submitted_by').order_by('-created_at')[:MAX_RESULTS]
+        .select_related('group').order_by('-created_at')[:MAX_RESULTS]
     )
-    found_projects = list(
-        Project.objects.filter(proposal_id__in=visible_ids)
-        .filter(_terms_filter(terms, ['title'])).order_by('-start_date')[:MAX_RESULTS]
-    )
-    found_milestones = list(
-        Milestone.objects.filter(project__proposal_id__in=visible_ids)
-        .filter(_terms_filter(terms, ['title'])).select_related('project').order_by('due_date')[:MAX_RESULTS]
+    for p in found_proposals:
+        p.percent = services.progress_percent(p)
+
+    found_tabs = list(
+        Assignment.objects.filter(proposal__in=proposals)
+        .filter(_terms_filter(terms, ['title']))
+        .select_related('proposal').order_by('proposal_id', 'position')[:MAX_RESULTS]
     )
 
     return {
         'proposals': found_proposals,
-        'projects': found_projects,
-        'milestones': found_milestones,
-        'total': len(found_proposals) + len(found_projects) + len(found_milestones),
+        'tabs': found_tabs,
+        'total': len(found_proposals) + len(found_tabs),
     }

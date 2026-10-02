@@ -3,7 +3,7 @@ import os
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
-from . import views
+from . import services, views
 from .models import Profile, Proposal
 from .views import _profile_context, _search_redirect
 
@@ -86,12 +86,12 @@ def profile(request):
             profile.save()
             return redirect('core:profile')
 
-    proposals = Proposal.objects.filter(submitted_by=user)
+    cards = services.research_cards(user)
     context = _profile_context(user)
     context.update({
         'profile': profile,
         'errors': errors,
-        'proposal_count': proposals.count(),
-        'recent_proposals': proposals.order_by('-created_at')[:5],
+        'proposal_count': len(cards),
+        'recent_proposals': cards[:5],
     })
     return render(request, 'core/profile.html', context)

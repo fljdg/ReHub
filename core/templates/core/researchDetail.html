@@ -1,19 +1,22 @@
 {% extends 'core/research_base.html' %}
 {% block title %}ReHub | {{ proposal.title }}{% endblock %}
+{% block head_extra %}{% load static %}<link rel="stylesheet" href="{% static 'core/css/group.css' %}">{% endblock %}
 {% block content %}
 <main class="rs-wrap">
     <div class="rs-topline">
         <a class="rs-back" href="{% url 'core:research' %}">&larr; Back</a>
         <span class="rs-tools">
             <a href="{% url 'core:calendar' %}" aria-label="Open calendar" title="Calendar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8 3.5v3M16 3.5v3"/></svg></a>
-            <button type="button" disabled aria-label="Group (not available yet)" title="Group (not available yet)"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2 19c0-3 3-5 6-5s6 2 6 5zM14 14.3c.6-.2 1.300-.3 2-.3 3 0 6 2 6 5h-6.500z"/></svg></button>
+            <a href="{% url 'core:group_detail' group.pk %}" aria-label="Open group" title="Group"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2 19c0-3 3-5 6-5s6 2 6 5zM14 14.3c.6-.2 1.300-.3 2-.3 3 0 6 2 6 5h-6.500z"/></svg></a>
         </span>
     </div>
+
+    {% for message in messages %}<p class="gp-msg {{ message.tags }}">{{ message }}</p>{% endfor %}
 
     <div class="rs-detail">
         <aside class="rs-side">
             <section class="rs-box rs-title">
-                <span class="rs-badge">My Research</span>
+                <span class="rs-badge">{{ group.name }}</span>
                 <h2>{{ proposal.title }}</h2>
                 {% include 'core/_ring.html' with percent=percent size=88 %}
             </section>
@@ -21,17 +24,33 @@
             <section class="rs-box">
                 <h3>Next Deadline</h3>
                 {% if next_deadline %}
-                <div class="rs-chip"><span class="rs-tag red">{{ next_deadline.due_date|date:"m.d.y" }}</span><span>{{ next_deadline.title }}</span></div>
+                <div class="rs-chip"><span class="rs-tag red">{{ next_deadline.a.due_date|date:"m.d.y" }}</span><span>{{ next_deadline.label }}</span></div>
+                {% elif not plan_set %}<p class="rs-muted">No plan yet.</p>
                 {% else %}<p class="rs-muted">No upcoming deadlines.</p>{% endif %}
 
                 <h3 class="rs-gap">Current Milestone</h3>
-                {% if current_milestone %}
+                {% if current %}
                 <div class="rs-chip">
-                    <span class="rs-tag {% if current_milestone.status == 'done' %}green{% elif current_milestone.status == 'in_progress' %}amber{% else %}red{% endif %}">{{ current_milestone.get_status_display }}</span>
-                    <span>{{ current_milestone.title }}</span>
+                    <span class="rs-tag {% if current.tag %}{{ current.tag }}{% else %}red{% endif %}">{% if current.status %}{{ current.status }}{% elif current.unlocked %}To do{% else %}Locked{% endif %}</span>
+                    <span>{{ current.label }}</span>
                 </div>
-                {% else %}<p class="rs-muted">No milestones set yet.</p>{% endif %}
+                {% else %}<p class="rs-muted">Everything is approved.</p>{% endif %}
             </section>
+
+            {% if is_evaluator and plan_ready %}
+            <section class="rs-box">
+                <h3>Plan</h3>
+                <p class="rs-muted">The proposal is in. Set the final deadline and how many chapters are needed.</p>
+                <button type="button" class="rs-turn" id="plan-open">Set up plan</button>
+            </section>
+            {% elif is_evaluator and can_add_chapter %}
+            <section class="rs-box">
+                <h3>Chapters</h3>
+                <form method="post" action="{% url 'core:tab_add' proposal.pk %}">{% csrf_token %}<button type="submit" class="rs-ghost">Add a chapter at the end</button></form>
+            </section>
+            {% elif not is_evaluator and not plan_set and tabs.0.latest %}
+            <section class="rs-box"><p class="rs-muted">Waiting for your evaluator to set the plan (deadline and chapters).</p></section>
+            {% endif %}
 
             <section class="rs-box">
                 <h3>Submission Calendar</h3>
@@ -49,45 +68,83 @@
         <div class="rs-right">
             {% for tab in tabs %}
             <section class="rs-main rs-pane" {% if tab.n != active %}hidden{% endif %}>
-                <form method="post" enctype="multipart/form-data" class="rs-bar">
+                {% if tab.can_upload %}
+                <form method="post" action="{% url 'core:tab_submit' proposal.pk tab.a.pk %}" enctype="multipart/form-data" class="rs-bar">
                     {% csrf_token %}
-                    <input type="hidden" name="chapter" value="{{ tab.n }}">
                     <label class="rs-up">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16V8M8.5 11.5L12 8l3.5 3.5"/></svg>
-                        <span class="rs-up-text" data-default="{% if tab.file %}{{ tab.file.name|cut:'proposals/'|cut:'chapters/' }}{% else %}{{ tab.prompt }}{% endif %}">{% if tab.file %}{{ tab.file.name|cut:'proposals/'|cut:'chapters/' }}{% else %}{{ tab.prompt }}{% endif %}</span>
+                        <span class="rs-up-text" data-default="{{ tab.prompt }}">{{ tab.prompt }}</span>
                         <input type="file" name="file" class="rs-file" accept=".pdf,.doc,.docx" hidden>
                     </label>
-                    <button type="submit" class="rs-turn" disabled>Turn in</button>
+                    <button type="submit" class="rs-turn" disabled>{% if tab.state == 'rejected' %}Upload new version{% else %}Turn in{% endif %}</button>
                 </form>
-                {% if tab.n == active %}{% for error in errors %}<p class="rs-error">{{ error }}</p>{% endfor %}{% endif %}
+                {% else %}
+                <div class="rs-bar">
+                    <span class="rs-up" aria-disabled="true">
+                        {% if not tab.unlocked %}Locked. Waiting for "{{ tab.locked_by }}" to be approved.
+                        {% elif tab.state == 'pending' %}Waiting for review.
+                        {% elif tab.state == 'approved' %}Approved.
+                        {% elif is_evaluator %}Waiting for members to upload.
+                        {% else %}You can't upload here.{% endif %}
+                    </span>
+                </div>
+                {% endif %}
+
                 <div class="rs-work">
                     <div class="rs-preview">
-                        {% if tab.file %}
-                            {% if tab.file.name|lower|slice:"-4:" == ".pdf" %}<iframe src="{{ tab.file.url }}" title="{{ tab.label }} preview"></iframe>
-                            {% else %}<a class="auth-link" href="{{ tab.file.url }}">Open {{ tab.file.name|cut:'proposals/'|cut:'chapters/' }}</a>{% endif %}
+                        {% if tab.latest %}
+                            {% if tab.latest.original_name|lower|slice:"-4:" == ".pdf" %}<iframe src="{% url 'core:submission_download' tab.latest.pk %}" title="{{ tab.label }} preview"></iframe>
+                            {% else %}<a class="auth-link" href="{% url 'core:submission_download' tab.latest.pk %}?dl=1">Download {{ tab.latest.original_name }}</a>{% endif %}
+                        {% elif not tab.unlocked %}This tab unlocks when the previous one is approved.
                         {% else %}Nothing turned in for {{ tab.label }} yet.{% endif %}
                     </div>
                     <div class="rs-feed">
                         <h3>Status &amp; Feedback</h3>
-                        {% if tab.n == 0 %}
-                            {% for e in evaluations %}
-                            <article class="rs-note">
-                                <header>
-                                    <span class="rs-tag {% if e.decision == 'approve' %}green{% elif e.decision == 'reject' %}red{% else %}amber{% endif %}">{% if e.decision == 'approve' %}Approved{% elif e.decision == 'reject' %}Rejected{% else %}Needs revision{% endif %}</span>
-                                    <time>{{ e.evaluated_at|date:"M j, Y" }}</time>
-                                </header>
-                                {{ e.comments }}
-                            </article>
-                            {% empty %}<p class="rs-muted">No feedback yet. Current status: {{ tab.status }}.</p>{% endfor %}
-                        {% elif tab.file %}
-                            <article class="rs-note">
-                                <header><span class="rs-tag {{ tab.tag }}">{{ tab.status }}</span></header>
-                                {{ tab.feedback|default:"Waiting for your adviser's feedback." }}
-                            </article>
-                        {% else %}<p class="rs-muted">Turn in your {{ tab.label }} to get feedback.</p>{% endif %}
+                        {% for s in tab.subs %}
+                        <article class="rs-note">
+                            <header>
+                                <span class="rs-tag {% if s.status == 'approved' %}green{% elif s.status == 'rejected' %}red{% else %}amber{% endif %}">v{{ s.version }} &middot; {{ s.get_status_display }}</span>
+                                <time>{{ s.submitted_at|date:"M j, Y" }}</time>
+                            </header>
+                            {% if s.uploaded_by %}<span class="rs-muted">By {{ s.uploaded_by.get_full_name|default:s.uploaded_by.username }}</span><br>{% endif %}
+                            {% if s.status == 'pending' %}Waiting for the evaluator's feedback.
+                            {% elif s.feedback %}{{ s.feedback }}
+                            {% else %}Approved.{% endif %}
+                        </article>
+                        {% empty %}<p class="rs-muted">No uploads yet for {{ tab.label }}.</p>{% endfor %}
                         <button type="button" class="rs-next">Next &rarr;</button>
                     </div>
                 </div>
+
+                {% if is_evaluator %}
+                <div class="gp-panel ev-panel">
+                    {% if tab.can_review %}
+                    <h3>Review v{{ tab.latest.version }}</h3>
+                    <form method="post" action="{% url 'core:submission_review' tab.latest.pk %}" class="gp-form">
+                        {% csrf_token %}
+                        <textarea class="field" name="feedback" rows="3" placeholder="Feedback (required when rejecting)"></textarea>
+                        <div class="gp-btns">
+                            <button type="submit" name="decision" value="reject" class="rs-ghost">Reject</button>
+                            <button type="submit" name="decision" value="approve" class="rs-turn">Approve</button>
+                        </div>
+                    </form>
+                    {% endif %}
+                    <details>
+                        <summary class="rs-muted">Edit this tab</summary>
+                        <form method="post" action="{% url 'core:tab_edit' proposal.pk tab.a.pk %}" class="gp-form">
+                            {% csrf_token %}
+                            <input class="field" type="text" name="title" value="{{ tab.a.title }}" maxlength="120" required>
+                            <input class="field" type="date" name="due_date" value="{{ tab.a.due_date|date:'Y-m-d' }}">
+                            <button type="submit" class="rs-turn">Save</button>
+                        </form>
+                        {% if tab.can_delete %}
+                        <form method="post" action="{% url 'core:tab_delete' proposal.pk tab.a.pk %}" onsubmit="return confirm('Delete this chapter?');">
+                            {% csrf_token %}<button type="submit" class="rs-ghost">Delete this chapter</button>
+                        </form>
+                        {% endif %}
+                    </details>
+                </div>
+                {% endif %}
             </section>
             {% endfor %}
 
@@ -97,6 +154,25 @@
         </div>
     </div>
 </main>
+
+{% if is_evaluator and plan_ready %}
+<dialog class="rs-dialog" id="plan-dialog">
+    <form method="post" action="{% url 'core:plan_setup' proposal.pk %}">
+        {% csrf_token %}
+        <h2>Set up plan</h2>
+        <label class="rs-muted" for="plan-deadline">Final deadline</label>
+        <input class="field" id="plan-deadline" type="date" name="deadline" min="{{ min_deadline }}" required>
+        <label class="rs-muted" for="plan-count">How many chapters?</label>
+        <input class="field" id="plan-count" type="number" name="chapter_count" min="1" max="12" value="3" required>
+        <textarea class="field" name="titles" rows="3" placeholder="Chapter names, one per line (optional). Blank = Chapter 1, Chapter 2..."></textarea>
+        <p class="rs-muted">Due dates are spread evenly from today. The last chapter is due on the deadline. You can edit any date later.</p>
+        <div class="rs-actions">
+            <button type="button" class="rs-ghost" id="plan-close">Cancel</button>
+            <button type="submit" class="rs-turn">Save plan</button>
+        </div>
+    </form>
+</dialog>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
@@ -115,8 +191,14 @@
                 show((i + 1) % panes.length);
             });
         });
+        var pd = document.getElementById('plan-dialog');
+        if (pd) {
+            document.getElementById('plan-open').onclick = function () { pd.showModal(); };
+            document.getElementById('plan-close').onclick = function () { pd.close(); };
+        }
         panes.forEach(function (p) {
             var f = p.querySelector('.rs-file'), label = p.querySelector('.rs-up-text'), btn = p.querySelector('.rs-turn');
+            if (!f) return;   // locked / read-only tabs have no upload form
             f.addEventListener('change', function () {
                 label.textContent = f.files[0] ? f.files[0].name : label.dataset.default;
                 btn.disabled = !f.files[0];
