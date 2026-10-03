@@ -1106,3 +1106,7 @@ img.profile-avatar { background-image: none; }
 }
 /* calendar: overdue chapter */
 .cal-overdue, .cal-pill-overdue { background: #fdeceb; color: #b3261e; }
+/* real images over the placeholders */
+.feature-art, .demo-media, .about-photo, .team-photo { position: relative; }
+.art-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.team-photo .art-img { object-position: top center; }
