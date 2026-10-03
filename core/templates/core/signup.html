@@ -4,6 +4,19 @@
 {% block title %}ReHub | Get Started{% endblock %}
 
 {% block content %}
+<style>
+    .pw-wrap { position: relative; width: 100%; }
+    .pw-wrap .field { padding-right: 48px; }
+    .pw-eye {
+        position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+        background: none; border: 0; padding: 4px; cursor: pointer;
+        color: #6b7785; display: grid; place-items: center;
+    }
+    .pw-eye:hover { color: #0077bb; }
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear { display: none; }
+</style>
+
 <section class="auth auth-media-right">
 
     <div class="auth-media">
@@ -46,15 +59,17 @@
                    placeholder="Email" autocomplete="email" value="{{ request.POST.email|default:'' }}" required>
 
             <div class="field-row">
-                <div>
+                <div class="pw-wrap">
                     <label class="sr-only" for="id_password1">Password</label>
                     <input class="field" id="id_password1" type="password" name="password1"
                            placeholder="Password" autocomplete="new-password" required>
+                    <button type="button" class="pw-eye" aria-label="Show password"></button>
                 </div>
-                <div>
+                <div class="pw-wrap">
                     <label class="sr-only" for="id_password2">Confirm password</label>
                     <input class="field" id="id_password2" type="password" name="password2"
                            placeholder="Confirm Password" autocomplete="new-password" required>
+                    <button type="button" class="pw-eye" aria-label="Show password"></button>
                 </div>
             </div>
 
@@ -71,4 +86,23 @@
     </div>
 
 </section>
+
+<script>
+(function () {
+    var eye = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+    var eyeOff = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.9 17.9A10.9 10.9 0 0 1 12 19C5 19 1 12 1 12a18.5 18.5 0 0 1 5.1-5.9M9.9 5.1A10.9 10.9 0 0 1 12 5c7 0 11 7 11 7a18.5 18.5 0 0 1-2.2 3.2M1 1l22 22"/></svg>';
+
+    document.querySelectorAll('.pw-wrap').forEach(function (wrap) {
+        var input = wrap.querySelector('input');
+        var btn = wrap.querySelector('.pw-eye');
+        btn.innerHTML = eye;
+        btn.addEventListener('click', function () {
+            var show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            btn.innerHTML = show ? eyeOff : eye;
+            btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        });
+    });
+})();
+</script>
 {% endblock %}
