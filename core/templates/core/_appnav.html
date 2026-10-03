@@ -35,7 +35,7 @@
             <span>Notifications</span>
         </a>
         <a href="{% url 'core:profile' %}" {% if nav == 'me' %}class="active" aria-current="page"{% endif %}>
-            {% if request.user.profile.avatar %}<img class="nav-avatar" src="{{ request.user.profile.avatar.url }}" alt="">{% else %}<span class="nav-avatar">{{ initials }}</span>{% endif %}
+            {% if request.user.profile.avatar %}<img class="nav-avatar" src="{{ request.user.profile.avatar.url }}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><span class="nav-avatar" style="display:none">{{ initials }}</span>{% else %}<span class="nav-avatar">{{ initials }}</span>{% endif %}
             <span>Me</span>
         </a>
     </div>

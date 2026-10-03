@@ -35,12 +35,12 @@
         {% elif is_evaluator %}
         <p class="rs-muted">Waiting for a member to upload the proposal. After that you can set the deadline and chapters.</p>
         {% else %}
-        <p class="rs-muted">No research yet. Upload your group's proposal to start (PDF, DOC or DOCX, max 20 MB).</p>
+        <p class="rs-muted">No research yet. Upload your group's proposal to start (PDF only, max 20 MB).</p>
         <form method="post" action="{% url 'core:research_new' group.pk %}" enctype="multipart/form-data" class="gp-form">
             {% csrf_token %}
             <input class="field" type="text" name="title" placeholder="Research title" maxlength="255" required>
             <textarea class="field" name="description" rows="3" placeholder="Short description (optional)"></textarea>
-            <input class="field" type="file" name="file" accept=".pdf,.doc,.docx" required>
+            <input class="field" type="file" name="file" accept=".pdf,application/pdf" required>
             <button type="submit" class="rs-turn">Upload proposal</button>
         </form>
         {% endif %}

@@ -30,7 +30,7 @@
 
         <div class="profile-body">
             <div class="profile-avatar-row">
-                {% if profile.avatar %}<img class="profile-avatar" src="{{ profile.avatar.url }}" alt="{{ display_name }}">{% else %}<div class="profile-avatar">{{ initials }}</div>{% endif %}
+                {% if profile.avatar %}<img class="profile-avatar" src="{{ profile.avatar.url }}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="profile-avatar" style="display:none">{{ initials }}</div>{% else %}<div class="profile-avatar">{{ initials }}</div>{% endif %}
                 <button class="icon-edit-btn profile-info-edit js-edit" type="button" title="Edit profile" aria-label="Edit profile">
                     <svg viewBox="0 0 24 24" fill="none"><path d="M4 20l4.5-1 10-10-3.5-3.5-10 10L4 20z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
                 </button>
