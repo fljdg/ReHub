@@ -1,0 +1,154 @@
+[
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$ABxwLJmqcnIsa7pJssl661$QHW7UAkvlIOyvqWQWG1W/JfCPX1pfHuxksN2w7w8dgY=",
+    "last_login": "2026-09-22T06:04:17.124Z",
+    "is_superuser": true,
+    "username": "rehubi",
+    "first_name": "",
+    "last_name": "",
+    "email": "https.yala@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-09-14T09:43:04.491Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$EYcN4VBfb0jLXKbdiI6jnV$UVSuBdGGXiXoLICMv542sMISleJqwvO38N/KNmhJUDk=",
+    "last_login": "2026-09-22T07:56:10.743Z",
+    "is_superuser": true,
+    "username": "testuser",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-09-22T06:42:42.466Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$gIK9CJNZvhQjZAeiOT6OQn$YKsKkSSmCL9r75n6KpJHRbOyGn6H84VQ7E1dJwA/tb4=",
+    "last_login": "2026-10-01T08:23:29.371Z",
+    "is_superuser": false,
+    "username": "emailtest",
+    "first_name": "Nick Angelo",
+    "last_name": "Tolentino",
+    "email": "emailtest@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-01T08:23:27.974Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "3sm7pbr1hbqy85iojv8x13zkasnil27f",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnOev2jpM8ZrI29wQHkSHFSIe5OIqWAdmbee4tI21ri1niJUxZXAeLyywZKT66HyA-q91mmua7LNMgjkadtsp8zv25n-3dQqJV9za4biR0xajWwRQ-KrUEdSAUYEVzWmA17sGnUkJwHDx1isMbsxCrx-QLX4Dbx:1x8uKN:Jrep2w9qcqGNKg9DYICFQCXGygrNghh4NsdnGnmRpS0",
+    "expire_date": "2026-10-06T06:50:07.576Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "3xy8pw1sh4a9p2gnpbm8t51gsonsuqzt",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hCGDjC4dO8ZCAxEqoYmpV0Z764kXej2v_f-S4S4bzXsvaxhzuIsQJx-txT5UdoA-R7bbZG8tG2dkxyKPGiX1yWX5-Vw_w5q7HXUnBOQN5h9dMZD1Ig5WYU4sQUwrjhLpD2RSQRfQXss1pJmVhMoL94fwMs2Ow:1x8tc1:QL8rhpkSv58tD1p6GdfusWw-N-enzpjyL_nyfBV6Cv0",
+    "expire_date": "2026-10-06T06:04:17.372Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "66w1mw18lkot4xlmhd42bmg3gqqur5iq",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnOev2jpM8ZrI29wQHkSHFSIe5OIqWAdmbee4tI21ri1niJUxZXAeLyywZKT66HyA-q91mmua7LNMgjkadtsp8zv25n-3dQqJV9za4biR0xajWwRQ-KrUEdSAUYEVzWmA17sGnUkJwHDx1isMbsxCrx-QLX4Dbx:1x8vMI:xfJ_UfXDrLexGpMI1DMPE1b6ABcueue0dXssH5XYdm8",
+    "expire_date": "2026-10-06T07:56:10.933Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "g8ulakxeb1uwgqn700u71dpis6r05o9e",
+  "fields": {
+    "session_data": ".eJxVjMEOwiAQRP-FsyFbFih49N5vIAtLpWpoUtqT8d9tkx70NMm8N_MWgba1hK3lJUwsrgLF5beLlJ65HoAfVO-zTHNdlynKQ5EnbXKYOb9up_t3UKiVfT1yVBqTUomQ9jCI4BDYRtIWxo6dM5bBc-6h1-DBaPQ6o-nYEMUoPl_VQzdU:1xCC4f:6WQiiLTtd95nVhpklINqTDh0qhYJhpsmvamGFT6FUOw",
+    "expire_date": "2026-10-15T08:23:29.495Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "i62i2f8z1jhxxf453wfb2p0xsdt2eboz",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnrxF9Kes5g2dldHEC2FCcV4u4QKQW0b2beS8S0rSVunZY4ozgLJU6_W07Tg-oO8J7qrcmp1XWZs9wVedAurw3peTncv4OSevnWxozWI2ggQzqrgdmxRutcCKSY1GQDeCKPCQdQga116EejMwNaQBTvD9krN-0:1x63HY:icW5lcRVqgXUTdiu-JNUKTCskz9DZnm6hHLq8RuXKEU",
+    "expire_date": "2026-09-28T09:47:24.883Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ioktq16q2qsx5221wco42enyk3o5mwaq",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnOev2jpM8ZrI29wQHkSHFSIe5OIqWAdmbee4tI21ri1niJUxZXAeLyywZKT66HyA-q91mmua7LNMgjkadtsp8zv25n-3dQqJV9za4biR0xajWwRQ-KrUEdSAUYEVzWmA17sGnUkJwHDx1isMbsxCrx-QLX4Dbx:1x8uJN:lzOHpSTSOk_vCdyBXteFm8wFmrG_C4gEvaPukpe6HHM",
+    "expire_date": "2026-10-06T06:49:05.947Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "lagnqn0sx6hn4db5uqwnh5zn4z9354we",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnOev2jpM8ZrI29wQHkSHFSIe5OIqWAdmbee4tI21ri1niJUxZXAeLyywZKT66HyA-q91mmua7LNMgjkadtsp8zv25n-3dQqJV9za4biR0xajWwRQ-KrUEdSAUYEVzWmA17sGnUkJwHDx1isMbsxCrx-QLX4Dbx:1x8uZF:jGvX-cfy4bU3O_rYAmjFiaFrYmdmxlHEa4TY2ayqRuE",
+    "expire_date": "2026-10-06T07:05:29.094Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ns3h5azjouew89osdvben0zr698zrzbd",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hCGDjC4dO8ZCAxEqoYmpV0Z764kXej2v_f-S4S4bzXsvaxhzuIsQJx-txT5UdoA-R7bbZG8tG2dkxyKPGiX1yWX5-Vw_w5q7HXUnBOQN5h9dMZD1Ig5WYU4sQUwrjhLpD2RSQRfQXss1pJmVhMoL94fwMs2Ow:1x7nft:iDWIc3bvU9k0jTC28u8TUH1xKqxOLe6pgQp8n7p3w98",
+    "expire_date": "2026-10-03T05:31:45.916Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "sq08lat4k0m24q0nz0z4izh6sjp24gs5",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnOev2jpM8ZrI29wQHkSHFSIe5OIqWAdmbee4tI21ri1niJUxZXAeLyywZKT66HyA-q91mmua7LNMgjkadtsp8zv25n-3dQqJV9za4biR0xajWwRQ-KrUEdSAUYEVzWmA17sGnUkJwHDx1isMbsxCrx-QLX4Dbx:1x8uEl:aDdrAcNjTSi6gwhcG7SblG90jisG3TYQds0AaDwhsAw",
+    "expire_date": "2026-10-06T06:44:19.267Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "v6tedgomi0g53fpjzt5jvf4ym0b4clp7",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hCGDjC4dO8ZCAxEqoYmpV0Z764kXej2v_f-S4S4bzXsvaxhzuIsQJx-txT5UdoA-R7bbZG8tG2dkxyKPGiX1yWX5-Vw_w5q7HXUnBOQN5h9dMZD1Ig5WYU4sQUwrjhLpD2RSQRfQXss1pJmVhMoL94fwMs2Ow:1x8tVj:kJ7QJ8ptrweQpnixVYmE0HCjxt-8jbjtg_BmtJvFe5g",
+    "expire_date": "2026-10-06T05:57:47.130Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "vkzvs9zum6y36e4syh1owz7se88e7848",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlnrxF9Kes5g2dldHEC2FCcV4u4QKQW0b2beS8S0rSVunZY4ozgLJU6_W07Tg-oO8J7qrcmp1XWZs9wVedAurw3peTncv4OSevnWxozWI2ggQzqrgdmxRutcCKSY1GQDeCKPCQdQga116EejMwNaQBTvD9krN-0:1x63Ha:VL_yqgvYPwpGiEbx_2HGMraAsSlF0OZk3ly9UQCy0Q0",
+    "expire_date": "2026-09-28T09:47:26.321Z"
+  }
+},
+{
+  "model": "core.profile",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "emailtest"
+    ],
+    "program": "it",
+    "bio": "",
+    "avatar": "avatars/8_M573l6o.png",
+    "banner": ""
+  }
+}
+]
