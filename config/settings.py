@@ -27,7 +27,7 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
+DEBUG = os.getenv('DJANGO_DEBUG', 'True').strip().lower() in ('true', '1', 'yes')
 
 ALLOWED_HOSTS = [
     h.strip()
@@ -159,7 +159,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Private research files (NOT served by the web server; downloads go through a permission-checked view)
 PRIVATE_MEDIA_ROOT = BASE_DIR / 'private_uploads'
 MAX_UPLOAD_MB = 20
-ALLOWED_UPLOAD_EXTENSIONS = ['.pdf', '.doc', '.docx']
+ALLOWED_UPLOAD_EXTENSIONS = ['.pdf']  # research files are PDF only
 
 
 # Auth redirects

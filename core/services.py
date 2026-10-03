@@ -106,15 +106,19 @@ def _require_student(group, user):
 def validate_upload(uploaded_file):
     if uploaded_file is None:
         raise ServiceError("Please choose a file.")
-    allowed = [e.lower() for e in getattr(settings, 'ALLOWED_UPLOAD_EXTENSIONS', ['.pdf', '.doc', '.docx'])]
+    allowed = [e.lower() for e in getattr(settings, 'ALLOWED_UPLOAD_EXTENSIONS', ['.pdf'])]
     max_mb = getattr(settings, 'MAX_UPLOAD_MB', 20)
     ext = os.path.splitext(uploaded_file.name)[1].lower()
     if ext not in allowed:
-        raise ServiceError("File type not allowed. Use: " + ", ".join(allowed) + ".")
+        raise ServiceError("Only PDF files can be uploaded. Convert your document to PDF first.")
     if uploaded_file.size == 0:
         raise ServiceError("That file is empty.")
     if uploaded_file.size > max_mb * 1024 * 1024:
         raise ServiceError(f"File is too big (max {max_mb} MB).")
+    head = uploaded_file.read(5)
+    uploaded_file.seek(0)
+    if head != b'%PDF-':
+        raise ServiceError("That file isn't a real PDF. Export or print your document to PDF and upload that.")
 
 
 # ---------------------------------------------------------------- groups and invites
