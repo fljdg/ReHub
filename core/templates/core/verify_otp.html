@@ -1,0 +1,80 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}ReHub | Verify your email{% endblock %}
+
+{% block content %}
+<section class="auth auth-media-left">
+
+    <div class="auth-media">
+        <img src="{% static 'core/images/login.png' %}" alt="Stack of bound research papers">
+        <span class="auth-fade" aria-hidden="true"></span>
+    </div>
+
+    <div class="auth-panel">
+        {% if dead_end %}
+        <div class="auth-form">
+            <header class="auth-head">
+                <h1 class="title-gradient">Sorry</h1>
+                <p class="auth-sub">{{ dead_end }}</p>
+            </header>
+            <a class="btn-submit" href="{% url 'core:signup' %}" style="text-align:center;text-decoration:none">Back to sign up</a>
+            <p class="auth-sub" style="margin-top:.8rem">Already have an account? <a class="auth-link" href="{% url 'core:login' %}">Log in</a></p>
+        </div>
+        {% else %}
+        <form class="auth-form" method="post" action="{% url 'core:verify_otp' %}">
+            {% csrf_token %}
+
+            <header class="auth-head">
+                <h1 class="title-gradient">Verify your email</h1>
+                <p class="auth-sub">We sent a {{ otp_length }}-digit code to {{ masked_email }}. Enter it to create your account.</p>
+            </header>
+
+            {% for message in messages %}
+            <p class="{% if message.tags == 'error' %}auth-error{% else %}auth-sub{% endif %}">{{ message }}</p>
+            {% endfor %}
+            {% if error %}<p class="auth-error">{{ error }}</p>{% endif %}
+
+            <label class="sr-only" for="id_code">Verification code</label>
+            <input class="field" id="id_code" type="text" name="code" inputmode="numeric"
+                   autocomplete="one-time-code" maxlength="{{ otp_length }}" pattern="[0-9]*"
+                   placeholder="{{ otp_length }}-digit code" autofocus required
+                   style="text-align:center;letter-spacing:.4em;font-size:1.3rem">
+
+            <button class="btn-submit" type="submit">Verify and create account</button>
+        </form>
+
+        <form class="auth-form" method="post" action="{% url 'core:resend_otp' %}" style="margin-top:.6rem">
+            {% csrf_token %}
+            <div class="auth-row" style="justify-content:space-between">
+                <a class="auth-link" href="{% url 'core:signup' %}">Use a different email</a>
+                <button class="auth-link" id="resendBtn" type="submit"
+                        style="background:none;border:0;cursor:pointer" {% if wait %}disabled{% endif %}>
+                    Resend code{% if wait %} (<span id="resendWait">{{ wait }}</span>s){% endif %}
+                </button>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+
+</section>
+
+<script>
+    (function () {
+        var span = document.getElementById('resendWait');
+        var btn = document.getElementById('resendBtn');
+        if (!span) { return; }
+        var left = parseInt(span.textContent, 10);
+        var timer = setInterval(function () {
+            left -= 1;
+            if (left <= 0) {
+                clearInterval(timer);
+                btn.disabled = false;
+                btn.textContent = 'Resend code';
+            } else {
+                span.textContent = left;
+            }
+        }, 1000);
+    })();
+</script>
+{% endblock %}

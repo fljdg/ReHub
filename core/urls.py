@@ -1,12 +1,16 @@
 from django.urls import path
-from . import group_views, profile_views, research_views, views
+from .legal_views import terms
+from . import group_views, otp_views, profile_views, research_views, views
 
 app_name = 'core'
 
 urlpatterns = [
+    path('terms/', terms, name='terms'),
     path('', views.home, name='home'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('verify-otp/', otp_views.verify_otp, name='verify_otp'),
+    path('verify-otp/resend/', otp_views.resend_otp, name='resend_otp'),
     path('get-started/', profile_views.signup, name='signup'),
     path('setup-profile/', profile_views.setup_profile, name='setup_profile'),
     path('dashboard/', views.dashboard, name='dashboard'),

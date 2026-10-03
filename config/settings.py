@@ -173,7 +173,27 @@ LOGOUT_REDIRECT_URL = 'core:home'
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Set EMAIL_HOST (and the other EMAIL_* values) in .env to send real emails.
+# With EMAIL_HOST empty, emails are printed in the terminal instead (handy while developing:
+# the sign-up code shows up in the `runserver` window).
+EMAIL_HOST = os.getenv('EMAIL_HOST', '').strip()
+EMAIL_BACKEND = (
+    'django.core.mail.backends.smtp.EmailBackend' if EMAIL_HOST
+    else 'django.core.mail.backends.console.EmailBackend'
+)
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '').strip()
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').strip().lower() in ('true', '1', 'yes')
+EMAIL_TIMEOUT = 15
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', '').strip() or EMAIL_HOST_USER or 'ReHub <noreply@rehub.local>'
+
+# Sign-up one-time passcode (emailed before the account is created)
+OTP_ENABLED = os.getenv('OTP_ENABLED', 'True').strip().lower() in ('true', '1', 'yes')
+OTP_LENGTH = 6
+OTP_TTL_MINUTES = 10
+OTP_MAX_ATTEMPTS = 5
+OTP_RESEND_SECONDS = 60
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/6.1/ref/settings/#default-auto-field

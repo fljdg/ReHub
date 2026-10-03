@@ -1,0 +1,97 @@
+{% extends 'core/base.html' %}
+
+{% block title %}ReHub | Terms and Conditions{% endblock %}
+
+{% block content %}
+<style>
+    .legal { max-width: 860px; margin: 0 auto; padding: 56px 24px 80px; color: var(--ink); line-height: 1.7; }
+    .legal h1 { font-size: 2.2rem; margin: 0 0 6px; }
+    .legal .updated { color: var(--muted); font-size: .95rem; margin: 0 0 28px; }
+    .legal .notice {
+        background: #eef6fb; border-left: 4px solid var(--blue); border-radius: var(--radius-sm);
+        padding: 14px 18px; margin-bottom: 32px; font-size: .95rem;
+    }
+    .legal h2 { font-size: 1.2rem; color: var(--blue-deep); margin: 32px 0 8px; }
+    .legal p, .legal li { font-size: 1rem; }
+    .legal ul { padding-left: 22px; }
+    .legal .back { display: inline-block; margin-top: 36px; }
+</style>
+
+<main class="legal">
+    <h1 class="title-gradient">Terms and Conditions</h1>
+    <p class="updated">Last updated: October 2026</p>
+
+    <div class="notice">
+        <strong>Sample document.</strong> ReHub is a student capstone project. These terms are placeholder
+        text for demonstration and are not a legally binding agreement.
+    </div>
+
+    <p>Welcome to ReHub. By creating an account or using the platform, you agree to the terms below.
+       If you do not agree, please do not sign up.</p>
+
+    <h2>1. About ReHub</h2>
+    <p>ReHub is a web platform that helps students organize research groups, upload research documents,
+       and have them reviewed chapter by chapter by a designated evaluator.</p>
+
+    <h2>2. Your Account</h2>
+    <ul>
+        <li>You must provide accurate information when signing up, including a working email address.</li>
+        <li>You must verify your email using the one-time code we send you before your account is created.</li>
+        <li>You are responsible for keeping your password confidential and for all activity under your account.</li>
+        <li>One person may hold one account. Do not share your login with others.</li>
+    </ul>
+
+    <h2>3. Groups and Roles</h2>
+    <p>The person who creates a group becomes its evaluator. Evaluators may invite or remove members, manage
+       chapter tabs, set deadlines, and approve or reject submissions. Members may upload documents and
+       re-submit rejected work. Roles apply only within the group where they are assigned.</p>
+
+    <h2>4. Uploaded Content</h2>
+    <ul>
+        <li>Only PDF files may be uploaded.</li>
+        <li>You keep ownership of everything you upload. You allow ReHub to store and display it to the members
+            and evaluator of your group so that review can take place.</li>
+        <li>Only upload work you have the right to share. Do not upload material that is unlawful, harmful,
+            or that infringes someone else's rights.</li>
+        <li>Uploaded files are visible only to members of the relevant group.</li>
+    </ul>
+
+    <h2>5. Academic Integrity</h2>
+    <p>ReHub is a collaboration and review tool. It does not replace your institution's academic policies.
+       You are responsible for the originality and proper citation of your own work. Approval of a chapter on
+       ReHub is not an official grade or endorsement.</p>
+
+    <h2>6. Acceptable Use</h2>
+    <ul>
+        <li>Do not attempt to access other users' accounts, groups, or files without permission.</li>
+        <li>Do not disrupt, overload, or try to break the service.</li>
+        <li>Do not use ReHub to harass or impersonate others.</li>
+    </ul>
+
+    <h2>7. Privacy</h2>
+    <p>We collect your name, email address, program or department, profile photo, and the documents you upload,
+       only to operate the platform. We do not sell your information. Your data is stored on the project's
+       database and file storage and is used for the purposes of this capstone project.</p>
+
+    <h2>8. Emails</h2>
+    <p>We send emails only for account purposes, such as verification codes and group notifications.</p>
+
+    <h2>9. Availability and Changes</h2>
+    <p>ReHub is provided "as is" while under development. The service may be unavailable at times, and features
+       or data may change or be removed without notice. We may update these terms; continued use after an update
+       means you accept the new terms.</p>
+
+    <h2>10. Termination</h2>
+    <p>We may suspend or remove accounts that break these terms. You may stop using ReHub at any time and
+       may ask the project team to delete your account.</p>
+
+    <h2>11. Limitation of Liability</h2>
+    <p>To the extent allowed by law, the ReHub team is not liable for lost data, missed deadlines, or any
+       damages arising from use of this student project. Keep your own copies of important files.</p>
+
+    <h2>12. Contact</h2>
+    <p>Questions about these terms? Reach the ReHub team through the Contact section on the home page.</p>
+
+    <a class="back auth-link" href="{% url 'core:signup' %}">&larr; Back to Get Started</a>
+</main>
+{% endblock %}

@@ -8,6 +8,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -15,7 +16,7 @@ from django.db import IntegrityError
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from . import services
+from . import otp, services
 from .models import Milestone, Proposal
 from .search import run_search
 
@@ -175,6 +176,22 @@ def signup_view(request):
             errors.append('An account with that email already exists.')
         if not request.POST.get('terms'):
             errors.append('Please accept the Terms and Conditions.')
+
+        if not errors and otp.enabled():
+            # Don't create the account yet: email a code first, and only create the
+            # account once it is typed on the verify page (proves the email is theirs).
+            try:
+                otp.begin(request.session, {
+                    'first_name': first_name, 'last_name': last_name,
+                    'email': email, 'password_hash': make_password(password1),
+                })
+            except otp.OTPConfigError:
+                errors.append('Email is not set up on the server yet, so we cannot send your code. Please tell the admin.')
+            except Exception:
+                errors.append('We could not send your verification code. Please check the email address and try again.')
+            else:
+                return redirect('core:verify_otp')
+            return render(request, 'core/signup.html', {'errors': errors})
 
         if not errors:
             username = email.split('@')[0]
